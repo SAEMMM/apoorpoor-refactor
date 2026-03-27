@@ -173,7 +173,6 @@ export default function Dropdown({
         slotProps={{
           paper: {
             sx: {
-              mt: 1.5,
               width: openAnchor?.clientWidth ?? undefined,
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -185,7 +184,7 @@ export default function Dropdown({
         <Box
           sx={{
             width: "100%",
-            p: "16px",
+            p: "8px",
             boxSizing: "border-box",
             backgroundColor: colors.white,
           }}

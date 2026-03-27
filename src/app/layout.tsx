@@ -1,5 +1,6 @@
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import type { Metadata } from "next";
+import MobileAppShell from "@/shared/ui/layout/MobileAppShell";
 import Providers from "./providers";
 import { pretendard } from "./fonts";
 
@@ -18,10 +19,13 @@ export default function RootLayout({
       <body
         style={{
           fontFamily: "var(--font-pretendard), sans-serif",
+          margin: 0,
         }}
       >
         <AppRouterCacheProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            <MobileAppShell>{children}</MobileAppShell>
+          </Providers>
         </AppRouterCacheProvider>
       </body>
     </html>
