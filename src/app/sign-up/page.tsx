@@ -14,6 +14,7 @@ import Button from "@/shared/ui/Button";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import TextField from "@/shared/ui/TextField";
 import { Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 type SignupFormValues = {
   email: string;
@@ -73,6 +74,8 @@ function validateForm(values: SignupFormValues): SignupFormErrors {
 }
 
 export default function SignupPage() {
+  const router = useRouter();
+
   const [values, setValues] = useState<SignupFormValues>(INITIAL_VALUES);
   const [errors, setErrors] = useState<SignupFormErrors>({});
   const [touched, setTouched] = useState<
@@ -185,6 +188,7 @@ export default function SignupPage() {
         password: values.password,
         poorName: values.poorName.trim(),
       });
+      router.push("/main")
     } finally {
       setIsSubmitting(false);
     }
