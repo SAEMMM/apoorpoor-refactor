@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📱 apoorpoor-refactor
 
-## Getting Started
+> 모바일 웹앱 기반 소비 관리 서비스 (개발 진행 중)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🗓️ 작업 기간
+- 2026.03.27 ~
+
+---
+
+## 📌 프로젝트 소개
+
+`apoorpoor-refactor`는  
+기존에 제작했던 React 기반 프로젝트를 **Next.js App Router 구조로 리팩토링**하며,  
+모바일 환경에 최적화된 소비 관리 웹앱으로 재구성하는 프로젝트입니다.
+
+현재는 **프론트엔드 UI 및 구조 설계 작업을 중심으로 진행 중**이며,  
+이후 백엔드까지 확장하여 실제 서비스 형태로 완성하는 것을 목표로 합니다.
+
+---
+
+## 🧑‍💻 개발 방향
+
+- 모바일 웹앱 UX 중심 설계 (최대 430px 레이아웃)
+- 재사용 가능한 UI 컴포넌트 구조 구축
+- 타입 안정성을 기반으로 한 데이터 흐름 설계
+- 실제 서비스로 확장 가능한 구조 설계
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- Next.js (App Router)
+- React
+- TypeScript
+
+### UI / Styling
+- MUI (Material UI)
+- styled API
+- Design Token 기반 스타일링
+
+---
+
+## 📂 프로젝트 구조
+```ts
+src/
+├── app/ # App Router 기반 페이지
+├── shared/
+│ └── ui/ # 공용 UI 컴포넌트
+├── styles/
+│ └── theme/ # 디자인 토큰 및 테마
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚧 진행 상태
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [x] 공용 UI 컴포넌트 구축
+- [x] 기본 페이지 구조 구성
+- [x] 모바일 레이아웃 설계
+- [ ] 주요 기능 개발
+- [ ] 백엔드 연동 및 데이터 처리
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔜 앞으로의 계획
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 사용자 인증 (로그인 / 회원가입)
+- 소비 데이터 관리 기능
+- 백엔드 API 설계 및 연동
+- 데이터 기반 UI 고도화
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 💡 목표
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+단순한 UI 구현을 넘어,  
+**실제 서비스로 확장 가능한 구조와 설계를 갖춘 풀스택 프로젝트**를 만드는 것을 목표로 합니다.
