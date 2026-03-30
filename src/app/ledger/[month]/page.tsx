@@ -17,10 +17,12 @@ import { BarChart } from "./_components/BarChart";
 import { Calendar } from "./_components/Calendar";
 import { Divider } from "./_components/Divider";
 import EditIcon from "@mui/icons-material/Edit";
+import Link from "next/link";
 import { List } from "./_components/List";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import { PieChart } from "./_components/PieChart";
 import { colors } from "@/styles/theme/tokens/color";
+import { getAdjacentMonth } from "@/features/ledger/utils/month";
 import { getMonthlyLedger } from "@/features/ledger/api/getMonthlyLedger";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
 import { notFound } from "next/navigation";
@@ -53,11 +55,14 @@ function getMonthlyExpenseTotal(
 export default async function LedgerPage({ params }: LedgerPageProps) {
   const { month } = await params;
 
+  const prevMonth = getAdjacentMonth(month, "prev");
+  const nextMonth = getAdjacentMonth(month, "next");
+
   if (!isValidMonth(month)) {
     notFound();
   }
 
-  // 나중에는 세션에서 userId를 가져오면 됩니다.
+  // TODO: 세션에서 userId를 가져오면 됨
   const userId = "user-001";
 
   const monthlyLedger = await getMonthlyLedger({
@@ -65,33 +70,38 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
     month,
   });
 
-  if (!monthlyLedger) {
-    notFound();
-  }
+  const days = monthlyLedger?.days ?? [];
 
-  const monthlyExpense = getMonthlyExpenseTotal(monthlyLedger.days);
+  const monthlyExpense = getMonthlyExpenseTotal(days);
 
   return (
     <PageContainer sx={{ gap: "30px" }}>
       <Wrapper>
         <HeaderWrapper>
           <IconButton>
-            <ArrowBackIosNewIcon sx={{ color: colors.black }} />
+            <ArrowBackIosNewIcon
+              fontSize="large"
+              sx={{ color: colors.black }}
+            />
           </IconButton>
           <MonthWrapper>
-            <IconButton size="small">
-              <ArrowLeftIcon
-                fontSize="large"
-                sx={{ color: colors.gray[500] }}
-              />
-            </IconButton>
+            <Link href={`/ledger/${prevMonth}`}>
+              <IconButton size="small">
+                <ArrowLeftIcon
+                  fontSize="large"
+                  sx={{ color: colors.gray[500] }}
+                />
+              </IconButton>
+            </Link>
             <Typography variant="h1">{month.slice(5, 8)}월</Typography>
-            <IconButton size="small">
-              <ArrowRightIcon
-                fontSize="large"
-                sx={{ color: colors.gray[500] }}
-              />
-            </IconButton>
+            <Link href={`/ledger/${nextMonth}`}>
+              <IconButton size="small">
+                <ArrowRightIcon
+                  fontSize="large"
+                  sx={{ color: colors.gray[500] }}
+                />
+              </IconButton>
+            </Link>
           </MonthWrapper>
           <IconButton>
             <AddIcon fontSize="large" sx={{ color: colors.black }} />
@@ -145,7 +155,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <Calendar />
+      <Calendar month={month} />
 
       <Divider />
 

@@ -1,0 +1,64 @@
+.rdp-root {
+  width: 100%;
+}
+
+.rdp-caption_label {
+  display: none;
+}
+
+.rdp-chevron {
+  display: none;
+}
+
+.rdp-months {
+  width: 100%;
+}
+
+.rdp-month {
+  width: 100%;
+}
+
+.rdp-month_caption {
+  display: none;
+}
+
+.rdp-month_grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.rdp-month_grid {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.rdp-day_button {
+  width: 100%;
+  min-height: 44px;
+  height: 44px;
+  border-radius: 0;
+}
+
+.rdp-weekdays {
+  width: 100%;
+}
+
+.rdp-week {
+  width: 100%;
+}
+
+.rdp-weekday,
+.rdp-day {
+  width: calc(100% / 7);
+  max-width: none;
+}
+
+.rdp-selected .rdp-day_button {
+  border-radius: 99px;
+  border: none !important;
+}
+
+.rdp-today:not(.rdp-outside) .rdp-day_button {
+  border: none !important;
+}

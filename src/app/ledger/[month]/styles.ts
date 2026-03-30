@@ -6,6 +6,7 @@ export const Wrapper = styled(Box)(() => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+  alignItems: "center",
 }));
 
 export const HeaderWrapper = styled(Box)(() => ({
