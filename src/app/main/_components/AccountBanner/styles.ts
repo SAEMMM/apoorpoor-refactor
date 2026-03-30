@@ -2,12 +2,14 @@ import { Box, styled } from "@mui/material";
 
 import { colors } from "@/styles/theme/tokens/color";
 
-export const Wrapper = styled(Box)(() => ({
+export const Wrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "hasAccount",
+})<{ hasAccount: boolean }>(({ hasAccount }) => ({
   width: "100%",
   height: "124px",
   padding: "13px",
   borderRadius: "12px",
-  backgroundColor: colors.gray[150],
+  backgroundColor: hasAccount ? colors.primary.main : colors.gray[150],
 
   display: "flex",
   alignItems: "center",
