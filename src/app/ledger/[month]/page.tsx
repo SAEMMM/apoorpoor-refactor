@@ -1,6 +1,26 @@
-import { Box, Stack, Typography } from "@mui/material";
+import {
+  AmountRowWrapper,
+  AmountWrapper,
+  HeaderWrapper,
+  MonthWrapper,
+  MonthlyTotalWrapper,
+  TitleWrapper,
+  Wrapper,
+} from "./styles";
+import { IconButton, Typography } from "@mui/material";
 
+import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { BarChart } from "./_components/BarChart";
+import { Calendar } from "./_components/Calendar";
+import { Divider } from "./_components/Divider";
+import EditIcon from "@mui/icons-material/Edit";
+import { List } from "./_components/List";
 import PageContainer from "@/shared/ui/layout/PageContainer";
+import { PieChart } from "./_components/PieChart";
+import { colors } from "@/styles/theme/tokens/color";
 import { getMonthlyLedger } from "@/features/ledger/api/getMonthlyLedger";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
 import { notFound } from "next/navigation";
@@ -52,62 +72,92 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const monthlyExpense = getMonthlyExpenseTotal(monthlyLedger.days);
 
   return (
-    <PageContainer>
-      <Stack spacing={3}>
-        <Typography variant="h1">{month} 가계부</Typography>
+    <PageContainer sx={{ gap: "30px" }}>
+      <Wrapper>
+        <HeaderWrapper>
+          <IconButton>
+            <ArrowBackIosNewIcon sx={{ color: colors.black }} />
+          </IconButton>
+          <MonthWrapper>
+            <IconButton size="small">
+              <ArrowLeftIcon
+                fontSize="large"
+                sx={{ color: colors.gray[500] }}
+              />
+            </IconButton>
+            <Typography variant="h1">{month.slice(5, 8)}월</Typography>
+            <IconButton size="small">
+              <ArrowRightIcon
+                fontSize="large"
+                sx={{ color: colors.gray[500] }}
+              />
+            </IconButton>
+          </MonthWrapper>
+          <IconButton>
+            <AddIcon fontSize="large" sx={{ color: colors.black }} />
+          </IconButton>
+        </HeaderWrapper>
 
-        <Box
-          sx={{
-            width: "100%",
-            p: 2,
-            borderRadius: "12px",
-            backgroundColor: "#f5f5f5",
-            boxSizing: "border-box",
-          }}
-        >
-          <Typography variant="body2">이번 달 소비</Typography>
-          <Typography variant="h2">
-            {formatCurrency(monthlyExpense)}원
+        <TitleWrapper>
+          <Typography variant="body2" color={colors.gray[500]}>
+            가계부 이름
           </Typography>
-        </Box>
+          <IconButton size="small">
+            <EditIcon sx={{ fontSize: 18, color: colors.gray[350] }} />
+          </IconButton>
+        </TitleWrapper>
 
-        <Stack spacing={2}>
-          {monthlyLedger.days.map((day) => (
-            <Box
-              key={day.date}
-              sx={{
-                width: "100%",
-                p: 2,
-                borderRadius: "12px",
-                backgroundColor: "#fafafa",
-                boxSizing: "border-box",
-              }}
-            >
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {day.date}
+        <AmountWrapper>
+          <MonthlyTotalWrapper>
+            <Typography variant="body2" fontWeight={700}>
+              이번달 소비 금액
+            </Typography>
+
+            <Typography variant="h1" color={colors.primary.main}>
+              {monthlyExpense.toLocaleString()}원
+            </Typography>
+          </MonthlyTotalWrapper>
+
+          <MonthlyTotalWrapper>
+            <AmountRowWrapper>
+              <Typography variant="body2" color={colors.gray[500]}>
+                수입
               </Typography>
+              <Typography
+                variant="body1"
+                fontWeight={700}
+                color={colors.gray[400]}
+              >
+                80,000원
+              </Typography>
+            </AmountRowWrapper>
+            <AmountRowWrapper>
+              <Typography variant="body2" color={colors.gray[500]}>
+                지출
+              </Typography>
+              <Typography variant="body1" fontWeight={700} color={colors.black}>
+                60,000원
+              </Typography>
+            </AmountRowWrapper>
+          </MonthlyTotalWrapper>
+        </AmountWrapper>
+      </Wrapper>
 
-              <Stack spacing={1}>
-                {day.items.map((item) => (
-                  <Box
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography variant="body2">{item.name}</Typography>
-                    <Typography variant="body2">
-                      {formatCurrency(item.amount)}원
-                    </Typography>
-                  </Box>
-                ))}
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
-      </Stack>
+      <Divider />
+
+      <Calendar />
+
+      <Divider />
+
+      <PieChart />
+
+      <Divider />
+
+      <BarChart />
+
+      <Divider />
+
+      <List />
     </PageContainer>
   );
 }

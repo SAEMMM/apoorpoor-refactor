@@ -1,16 +1,19 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
+
 import { ReactNode } from "react";
 
 type PageContainerProps = {
   children: ReactNode;
   centered?: boolean;
-};
+} & BoxProps;
 
 export default function PageContainer({
   children,
   centered = false,
+  sx,
+  ...rest
 }: PageContainerProps) {
   return (
     <Box
@@ -26,7 +29,9 @@ export default function PageContainer({
           alignItems: "center",
           justifyContent: "center",
         }),
+        ...sx,
       }}
+      {...rest}
     >
       {children}
     </Box>
