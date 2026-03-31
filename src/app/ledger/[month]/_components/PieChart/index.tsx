@@ -12,13 +12,19 @@ import {
 } from "chart.js";
 import { Bubble, ChartWrapper, TitleWrapper, Wrapper } from "./styles";
 import type { BubblePosition, PieChartProps } from "./types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DetailList } from "./DetailList";
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
+
+const EMPTY_CHART_ITEMS = [
+  { label: "empty-1", amount: 45, percent: 0, color: colors.primary.l[600] },
+  { label: "empty-2", amount: 30, percent: 0, color: colors.gray[250] },
+  { label: "empty-3", amount: 25, percent: 0, color: colors.gray[150] },
+];
 
 export const PieChart = ({
   chartItems,
@@ -32,17 +38,27 @@ export const PieChart = ({
   );
   const [selectedIndex, setSelectedIndex] = useState(initialSelectedIndex);
 
-  const safeSelectedIndex =
-    chartItems.length === 0
-      ? 0
-      : Math.min(selectedIndex, chartItems.length - 1);
+  const isEmpty = chartItems.length === 0;
 
-  const selectedItem = chartItems[safeSelectedIndex];
+  const displayChartItems = useMemo(() => {
+    return isEmpty ? EMPTY_CHART_ITEMS : chartItems;
+  }, [chartItems, isEmpty]);
+
+  const safeSelectedIndex = isEmpty
+    ? 0
+    : Math.min(selectedIndex, chartItems.length - 1);
+
+  const selectedItem = isEmpty ? null : chartItems[safeSelectedIndex];
 
   useEffect(() => {
-    if (!canvasRef.current || chartItems.length === 0) return;
+    if (!canvasRef.current) return;
 
     const updateBubblePosition = (chart: Chart<"doughnut">) => {
+      if (isEmpty) {
+        setBubblePosition(null);
+        return;
+      }
+
       const meta = chart.getDatasetMeta(0);
       const arc = meta.data[safeSelectedIndex];
 
@@ -76,11 +92,11 @@ export const PieChart = ({
     };
 
     const data: ChartData<"doughnut"> = {
-      labels: chartItems.map((item) => item.label),
+      labels: displayChartItems.map((item) => item.label),
       datasets: [
         {
-          data: chartItems.map((item) => item.amount),
-          backgroundColor: chartItems.map((item) => item.color),
+          data: displayChartItems.map((item) => item.amount),
+          backgroundColor: displayChartItems.map((item) => item.color),
           borderWidth: 0,
           hoverOffset: 0,
           spacing: 0,
@@ -96,7 +112,7 @@ export const PieChart = ({
       },
       cutout: "52%",
       onClick: (_, elements) => {
-        if (!elements.length) return;
+        if (isEmpty || !elements.length) return;
         setSelectedIndex(elements[0].index);
       },
       plugins: {
@@ -124,23 +140,23 @@ export const PieChart = ({
       chart.destroy();
       chartRef.current = null;
     };
-  }, [chartItems, safeSelectedIndex]);
-
-  if (!selectedItem) return null;
+  }, [displayChartItems, safeSelectedIndex, isEmpty]);
 
   return (
     <Wrapper>
       <TitleWrapper>
         <Typography variant="h2">이번달 상세 지출내역</Typography>
         <Typography variant="body1">
-          이번달 {selectedItem.label} 지출 비중이에요.
+          {isEmpty
+            ? "가계부를 작성하고 상세 지출을 확인해보세요!"
+            : `${selectedItem?.label}에 가장 많이 사용하셨어요.`}
         </Typography>
       </TitleWrapper>
 
       <ChartWrapper>
         <canvas ref={canvasRef} />
 
-        {bubblePosition && (
+        {!isEmpty && bubblePosition && selectedItem && (
           <Bubble bubblePosition={bubblePosition}>
             <Typography variant="caption" color={colors.black}>
               {selectedItem.label}
@@ -157,7 +173,7 @@ export const PieChart = ({
         )}
       </ChartWrapper>
 
-      <DetailList items={listItems} />
+      {!isEmpty && <DetailList items={listItems} />}
     </Wrapper>
   );
 };

@@ -8,7 +8,10 @@ import {
   Wrapper,
 } from "./styles";
 import { IconButton, Typography } from "@mui/material";
-import { getChartSummary, getExpenseSummary } from "./_components/PieChart/types";
+import {
+  getChartSummary,
+  getExpenseSummary,
+} from "./_components/PieChart/types";
 
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -16,6 +19,7 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { BarChart } from "./_components/BarChart";
 import { Calendar } from "./_components/Calendar";
+import type { ComponentProps } from "react";
 import { Divider } from "./_components/Divider";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
@@ -25,8 +29,8 @@ import { PieChart } from "./_components/PieChart";
 import { colors } from "@/styles/theme/tokens/color";
 import { getAdjacentMonth } from "@/features/ledger/utils/month";
 import { getMonthlyLedger } from "@/features/ledger/api/getMonthlyLedger";
+import { getMonthlyTotals } from "./types";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
-import { marchLedgerMock } from "@/mocks/ledger";
 import { notFound } from "next/navigation";
 
 type LedgerPageProps = {
@@ -35,23 +39,112 @@ type LedgerPageProps = {
   }>;
 };
 
+type MonthlyLedgerData = NonNullable<
+  Awaited<ReturnType<typeof getMonthlyLedger>>
+>;
+type LedgerDay = MonthlyLedgerData["days"][number];
+type BarChartCompareData = ComponentProps<typeof BarChart>["compareData"];
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("ko-KR").format(value);
 }
 
-function getMonthlyExpenseTotal(
-  days: { items: { type: string; amount: number }[] }[],
-) {
-  const total = days.reduce((monthAcc, day) => {
+function createEmptyMonthlyLedger(
+  userId: string,
+  month: string,
+): MonthlyLedgerData {
+  return {
+    userId,
+    month,
+    days: [],
+  };
+}
+
+function getExpenseTotal(days: LedgerDay[]) {
+  return days.reduce((monthAcc, day) => {
     return (
       monthAcc +
       day.items
         .filter((item) => item.type === "expense")
-        .reduce((dayAcc, item) => dayAcc + item.amount, 0)
+        .reduce((dayAcc, item) => dayAcc + Math.abs(item.amount), 0)
     );
   }, 0);
+}
 
-  return Math.abs(total);
+function getMonthDate(month: string) {
+  return new Date(`${month}-01`);
+}
+
+function formatMonth(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function getPreviousMonth(month: string) {
+  const date = getMonthDate(month);
+  date.setMonth(date.getMonth() - 1);
+  return formatMonth(date);
+}
+
+function getPreviousYearSameMonth(month: string) {
+  const date = getMonthDate(month);
+  date.setFullYear(date.getFullYear() - 1);
+  return formatMonth(date);
+}
+
+function getQuarter(month: string) {
+  const monthNumber = Number(month.slice(5, 7));
+  return Math.ceil(monthNumber / 3);
+}
+
+function getQuarterMonths(year: number, quarter: number) {
+  const startMonth = (quarter - 1) * 3 + 1;
+
+  return Array.from({ length: 3 }, (_, index) => {
+    const monthNumber = startMonth + index;
+    return `${year}-${String(monthNumber).padStart(2, "0")}`;
+  });
+}
+
+function getCurrentQuarterInfo(month: string) {
+  const currentDate = getMonthDate(month);
+
+  return {
+    year: currentDate.getFullYear(),
+    quarter: getQuarter(month),
+  };
+}
+
+function getPreviousQuarterInfo(month: string) {
+  const currentDate = getMonthDate(month);
+  const currentYear = currentDate.getFullYear();
+  const currentQuarter = getQuarter(month);
+
+  if (currentQuarter === 1) {
+    return {
+      year: currentYear - 1,
+      quarter: 4,
+    };
+  }
+
+  return {
+    year: currentYear,
+    quarter: currentQuarter - 1,
+  };
+}
+
+function getMonthLabel(month: string) {
+  return `${Number(month.slice(5, 7))}월`;
+}
+
+function getYearMonthLabel(month: string) {
+  const year = month.slice(2, 4);
+  const monthNumber = month.slice(5, 7);
+  return `${year}.${monthNumber}`;
+}
+
+async function getSafeMonthlyLedger(userId: string, month: string) {
+  const ledger = await getMonthlyLedger({ userId, month });
+  return ledger ?? createEmptyMonthlyLedger(userId, month);
 }
 
 export default async function LedgerPage({ params }: LedgerPageProps) {
@@ -64,20 +157,102 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
     notFound();
   }
 
-  // TODO: 세션에서 userId를 가져오면 됨
   const userId = "user-001";
 
-  const monthlyLedger = await getMonthlyLedger({
-    userId,
-    month,
-  });
+  const safeMonthlyLedger = await getSafeMonthlyLedger(userId, month);
+  const days = safeMonthlyLedger.days;
 
-  const days = monthlyLedger?.days ?? [];
+  const { income: monthlyIncome, expense: monthlyExpense } =
+    getMonthlyTotals(days);
 
-  const monthlyExpense = getMonthlyExpenseTotal(days);
+  const remainingAmount = monthlyIncome - monthlyExpense;
 
-  const listItems = getExpenseSummary(marchLedgerMock);
+  const listItems = getExpenseSummary(safeMonthlyLedger);
   const chartItems = getChartSummary(listItems);
+
+  const previousMonth = getPreviousMonth(month);
+  const previousYearMonth = getPreviousYearSameMonth(month);
+
+  const previousMonthlyLedger = await getSafeMonthlyLedger(
+    userId,
+    previousMonth,
+  );
+  const previousYearMonthlyLedger = await getSafeMonthlyLedger(
+    userId,
+    previousYearMonth,
+  );
+
+  const previousMonthExpense = getExpenseTotal(previousMonthlyLedger.days);
+  const previousYearExpense = getExpenseTotal(previousYearMonthlyLedger.days);
+
+  const currentQuarterInfo = getCurrentQuarterInfo(month);
+  const previousQuarterInfo = getPreviousQuarterInfo(month);
+
+  const currentQuarterMonths = getQuarterMonths(
+    currentQuarterInfo.year,
+    currentQuarterInfo.quarter,
+  );
+
+  const previousQuarterMonths = getQuarterMonths(
+    previousQuarterInfo.year,
+    previousQuarterInfo.quarter,
+  );
+
+  const currentQuarterLedgers = await Promise.all(
+    currentQuarterMonths.map((quarterMonth) =>
+      getSafeMonthlyLedger(userId, quarterMonth),
+    ),
+  );
+
+  const previousQuarterLedgers = await Promise.all(
+    previousQuarterMonths.map((quarterMonth) =>
+      getSafeMonthlyLedger(userId, quarterMonth),
+    ),
+  );
+
+  const currentQuarterExpense = currentQuarterLedgers.reduce((sum, ledger) => {
+    return sum + getExpenseTotal(ledger.days);
+  }, 0);
+
+  const previousQuarterExpense = previousQuarterLedgers.reduce(
+    (sum, ledger) => {
+      return sum + getExpenseTotal(ledger.days);
+    },
+    0,
+  );
+
+  const compareData: BarChartCompareData = {
+    month: [
+      {
+        label: getMonthLabel(previousMonth),
+        amount: previousMonthExpense,
+      },
+      {
+        label: getMonthLabel(month),
+        amount: monthlyExpense,
+      },
+    ],
+    quarter: [
+      {
+        label: `${previousQuarterInfo.quarter}분기`,
+        amount: previousQuarterExpense,
+      },
+      {
+        label: `${currentQuarterInfo.quarter}분기`,
+        amount: currentQuarterExpense,
+      },
+    ],
+    year: [
+      {
+        label: getYearMonthLabel(previousYearMonth),
+        amount: previousYearExpense,
+      },
+      {
+        label: getYearMonthLabel(month),
+        amount: monthlyExpense,
+      },
+    ],
+  };
 
   return (
     <PageContainer sx={{ gap: "30px" }}>
@@ -89,6 +264,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
               sx={{ color: colors.black }}
             />
           </IconButton>
+
           <MonthWrapper>
             <Link href={`/ledger/${prevMonth}`}>
               <IconButton size="small">
@@ -98,7 +274,9 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
                 />
               </IconButton>
             </Link>
-            <Typography variant="h1">{month.slice(5, 8)}월</Typography>
+
+            <Typography variant="h1">{Number(month.slice(5, 7))}월</Typography>
+
             <Link href={`/ledger/${nextMonth}`}>
               <IconButton size="small">
                 <ArrowRightIcon
@@ -108,6 +286,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
               </IconButton>
             </Link>
           </MonthWrapper>
+
           <IconButton>
             <AddIcon fontSize="large" sx={{ color: colors.black }} />
           </IconButton>
@@ -125,11 +304,11 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
         <AmountWrapper>
           <MonthlyTotalWrapper>
             <Typography variant="body2" fontWeight={700}>
-              이번달 소비 금액
+              이번달 지출
             </Typography>
 
             <Typography variant="h1" color={colors.primary.main}>
-              {monthlyExpense.toLocaleString()}원
+              {formatCurrency(monthlyExpense)}원
             </Typography>
           </MonthlyTotalWrapper>
 
@@ -143,15 +322,26 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
                 fontWeight={700}
                 color={colors.gray[400]}
               >
-                80,000원
+                {formatCurrency(monthlyIncome)}원
               </Typography>
             </AmountRowWrapper>
+
             <AmountRowWrapper>
               <Typography variant="body2" color={colors.gray[500]}>
-                지출
+                남은 금액
               </Typography>
-              <Typography variant="body1" fontWeight={700} color={colors.black}>
-                60,000원
+              <Typography
+                variant="body1"
+                fontWeight={700}
+                color={
+                  remainingAmount >= 0
+                    ? colors.primary.main
+                    : colors.system.error
+                }
+              >
+                {remainingAmount >= 0
+                  ? `+${formatCurrency(remainingAmount)}원`
+                  : `-${formatCurrency(Math.abs(remainingAmount))}원`}
               </Typography>
             </AmountRowWrapper>
           </MonthlyTotalWrapper>
@@ -160,15 +350,15 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <Calendar month={month} />
+      <Calendar month={month} monthlyLedger={safeMonthlyLedger} />
 
       <Divider />
 
-      <PieChart chartItems={chartItems} listItems={listItems} />
+      <PieChart key={month} chartItems={chartItems} listItems={listItems} />
 
       <Divider />
 
-      <BarChart />
+      <BarChart compareData={compareData} />
 
       <Divider />
 

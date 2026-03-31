@@ -1,6 +1,5 @@
 "use client";
 
-import { colors } from "@/styles/theme/tokens/color";
 import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import {
@@ -12,17 +11,26 @@ import {
 } from "react-day-picker";
 import { ko } from "react-day-picker/locale";
 import "react-day-picker/style.css";
-import "./Calendar.css";
-import { CalendarProps } from "./types";
 
-const amountMap: Record<string, number> = {
-  "2026-03-02": 5000,
-  "2026-03-03": -5000,
-  "2026-03-10": 10000,
-  "2026-03-13": -10000,
-  "2026-03-19": 5000,
-  "2026-03-24": -10000,
-};
+import { colors } from "@/styles/theme/tokens/color";
+import type { MonthlyLedger } from "@/mocks/ledger";
+import "./Calendar.css";
+
+interface CalendarProps {
+  month: string; // YYYY-MM
+  monthlyLedger: MonthlyLedger;
+}
+
+function getDailyAmountMap(
+  monthlyLedger: MonthlyLedger,
+): Record<string, number> {
+  return monthlyLedger.days.reduce<Record<string, number>>((acc, day) => {
+    const totalAmount = day.items.reduce((sum, item) => sum + item.amount, 0);
+
+    acc[day.date] = totalAmount;
+    return acc;
+  }, {});
+}
 
 function LedgerWeekday(props: WeekdayProps) {
   const label = String(props.children);
@@ -50,20 +58,27 @@ function LedgerWeekday(props: WeekdayProps) {
   );
 }
 
-function LedgerDayButton(props: DayButtonProps) {
-  const { classNames } = useDayPicker();
-  const isoDate = props.day.isoDate;
-  const amount = amountMap[isoDate];
-  const isToday =
-    dayjs(new Date()).format("YYYY-MM-DD") ===
-    dayjs(new Date(props.day.date)).format("YYYY-MM-DD");
+interface LedgerDayButtonProps extends DayButtonProps {
+  amountMap: Record<string, number>;
+}
 
-  if (props.modifiers.hidden || props.modifiers.outside) {
-    return <DayButton {...props} />;
+function LedgerDayButton(props: LedgerDayButtonProps) {
+  const { amountMap, ...dayButtonProps } = props;
+  const { classNames } = useDayPicker();
+
+  const isoDate = dayButtonProps.day.isoDate;
+  const amount = amountMap[isoDate];
+
+  const isToday =
+    dayjs().format("YYYY-MM-DD") ===
+    dayjs(dayButtonProps.day.date).format("YYYY-MM-DD");
+
+  if (dayButtonProps.modifiers.hidden || dayButtonProps.modifiers.outside) {
+    return <DayButton {...dayButtonProps} />;
   }
 
   return (
-    <DayButton {...props} className={classNames.day_button}>
+    <DayButton {...dayButtonProps} className={classNames.day_button}>
       <div
         style={{
           width: "100%",
@@ -94,10 +109,10 @@ function LedgerDayButton(props: DayButtonProps) {
           color={isToday ? colors.black : colors.gray[450]}
           sx={{ zIndex: 1 }}
         >
-          {props.day.date.getDate()}
+          {dayButtonProps.day.date.getDate()}
         </Typography>
 
-        {amount !== undefined && (
+        {amount !== undefined && amount !== 0 && (
           <span
             style={{
               fontSize: 10,
@@ -116,13 +131,13 @@ function LedgerDayButton(props: DayButtonProps) {
   );
 }
 
-export const Calendar = (props: CalendarProps) => {
-  const { month } = props;
+export const Calendar = ({ month, monthlyLedger }: CalendarProps) => {
+  const amountMap = getDailyAmountMap(monthlyLedger);
 
   return (
     <DayPicker
       mode="single"
-      month={new Date(month)}
+      month={dayjs(`${month}-01`).toDate()}
       showOutsideDays={false}
       fixedWeeks
       locale={ko}
@@ -132,8 +147,10 @@ export const Calendar = (props: CalendarProps) => {
         justifyContent: "center",
       }}
       components={{
-        DayButton: LedgerDayButton,
         Weekday: LedgerWeekday,
+        DayButton: (props) => (
+          <LedgerDayButton {...props} amountMap={amountMap} />
+        ),
       }}
     />
   );

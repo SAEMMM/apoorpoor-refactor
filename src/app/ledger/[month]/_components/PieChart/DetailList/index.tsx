@@ -25,7 +25,7 @@ export const DetailList = ({
 
   return (
     <Stack spacing={4}>
-      <Stack spacing={4}>
+      <Stack spacing={3}>
         {visibleItems.map((item) => (
           <Box
             key={item.category}
