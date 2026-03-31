@@ -258,12 +258,14 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
     <PageContainer sx={{ gap: "30px" }}>
       <Wrapper>
         <HeaderWrapper>
-          <IconButton>
-            <ArrowBackIosNewIcon
-              fontSize="large"
-              sx={{ color: colors.black }}
-            />
-          </IconButton>
+          <Link href={`/main`}>
+            <IconButton>
+              <ArrowBackIosNewIcon
+                fontSize="large"
+                sx={{ color: colors.black }}
+              />
+            </IconButton>
+          </Link>
 
           <MonthWrapper>
             <Link href={`/ledger/${prevMonth}`}>
