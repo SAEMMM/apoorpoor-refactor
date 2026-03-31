@@ -8,6 +8,7 @@ import {
   Wrapper,
 } from "./styles";
 import { IconButton, Typography } from "@mui/material";
+import { getChartSummary, getExpenseSummary } from "./_components/PieChart/types";
 
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -25,6 +26,7 @@ import { colors } from "@/styles/theme/tokens/color";
 import { getAdjacentMonth } from "@/features/ledger/utils/month";
 import { getMonthlyLedger } from "@/features/ledger/api/getMonthlyLedger";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
+import { marchLedgerMock } from "@/mocks/ledger";
 import { notFound } from "next/navigation";
 
 type LedgerPageProps = {
@@ -73,6 +75,9 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const days = monthlyLedger?.days ?? [];
 
   const monthlyExpense = getMonthlyExpenseTotal(days);
+
+  const listItems = getExpenseSummary(marchLedgerMock);
+  const chartItems = getChartSummary(listItems);
 
   return (
     <PageContainer sx={{ gap: "30px" }}>
@@ -159,7 +164,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <PieChart />
+      <PieChart chartItems={chartItems} listItems={listItems} />
 
       <Divider />
 
