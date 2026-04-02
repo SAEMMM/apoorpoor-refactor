@@ -1,15 +1,10 @@
 import { Hono } from "hono";
+import { ledgerRoute } from "./routes/ledger";
 import { serve } from "@hono/node-server";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-  return c.json({ ok: true, service: "api" });
-});
-
-app.get("/ledger/health", (c) => {
-  return c.json({ ok: true });
-});
+app.route("/ledger", ledgerRoute);
 
 serve(
   {

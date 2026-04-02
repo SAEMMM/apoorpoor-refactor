@@ -2,6 +2,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import type { Metadata } from "next";
 import MobileAppShell from "@/shared/ui/layout/MobileAppShell";
 import Providers from "./providers";
+import React from "react";
 import { pretendard } from "./fonts";
 
 export const metadata: Metadata = {

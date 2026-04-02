@@ -3,6 +3,7 @@
 import { Box, Typography } from "@mui/material";
 
 import Image from "next/image";
+import React from "react"
 import { Wrapper } from "./styles";
 import { colors } from "@/styles/theme/tokens/color";
 

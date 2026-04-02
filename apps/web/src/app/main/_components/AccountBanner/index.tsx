@@ -4,25 +4,27 @@ import { Box, Typography } from "@mui/material";
 import { GoAccountButton, LeftWrapper, Wrapper } from "./styles";
 
 import Image from "next/image";
+import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
-import dayjs from "dayjs";
-import { getMonthlyExpense } from "./types";
-import { isEmpty } from "lodash";
-import { marchLedgerMock } from "@/mocks/ledger";
 import { useRouter } from "next/navigation";
 
-export const AccountBanner = () => {
+type AccountBannerProps = {
+  month: string;
+  hasAccount: boolean;
+  monthlyExpense: number;
+};
+
+export const AccountBanner = ({
+  month,
+  hasAccount,
+  monthlyExpense,
+}: AccountBannerProps) => {
   const router = useRouter();
-
-  const currentMonth = dayjs(new Date()).format("YYYY-MM");
-
-  // TODO: api 연결 시, 해당 유저 + 현재 월의 소비 액
-  const hasAccount = marchLedgerMock;
 
   return (
     <Wrapper
-      hasAccount={!isEmpty(hasAccount)}
-      onClick={() => router.push(`/ledger/${currentMonth}`)}
+      hasAccount={hasAccount}
+      onClick={() => router.push(`/ledger/${month}`)}
     >
       <LeftWrapper>
         {hasAccount ? (
@@ -45,7 +47,7 @@ export const AccountBanner = () => {
 
         {hasAccount ? (
           <Typography variant="body2" fontWeight={700} color={colors.white}>
-            이번달 소비 : {getMonthlyExpense(hasAccount).toLocaleString()}원
+            이번달 소비 : {monthlyExpense.toLocaleString()}원
           </Typography>
         ) : (
           <GoAccountButton>

@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   apps/api:
     dependencies:
@@ -47,6 +51,9 @@ importers:
       '@mui/system':
         specifier: ^7.3.9
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4)
+      '@repo/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1

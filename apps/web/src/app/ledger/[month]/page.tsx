@@ -26,6 +26,7 @@ import Link from "next/link";
 import { List } from "./_components/List";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import { PieChart } from "./_components/PieChart";
+import React from "react"
 import { colors } from "@/styles/theme/tokens/color";
 import { getAdjacentMonth } from "@/features/ledger/utils/month";
 import { getMonthlyLedger } from "@/features/ledger/api/getMonthlyLedger";

@@ -5,6 +5,7 @@ import { Box, Typography } from "@mui/material";
 import Button from "@/shared/ui/Button";
 import Image from "next/image";
 import PageContainer from "@/shared/ui/layout/PageContainer";
+import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
 import { useEffect } from "react";
 

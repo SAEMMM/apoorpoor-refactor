@@ -4,10 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./ledger": "./src/ledger.ts",
-    "./index": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./ledger": "./src/ledger/index.ts"
   },
-  "types": "./src/index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit"
   }

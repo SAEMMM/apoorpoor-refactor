@@ -11,7 +11,7 @@ import {
 } from "react-day-picker";
 import { ko } from "react-day-picker/locale";
 import "react-day-picker/style.css";
-
+import React from "react"
 import { colors } from "@/styles/theme/tokens/color";
 import type { MonthlyLedger } from "@/mocks/ledger";
 import "./Calendar.css";

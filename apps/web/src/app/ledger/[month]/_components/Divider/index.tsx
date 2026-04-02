@@ -1,6 +1,7 @@
 "use client";
 
 import { Box } from "@mui/material";
+import React from "react"
 import { colors } from "@/styles/theme/tokens/color";
 
 export const Divider = () => {

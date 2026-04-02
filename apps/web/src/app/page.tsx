@@ -3,6 +3,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 
 import Image from "next/image";
+import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";

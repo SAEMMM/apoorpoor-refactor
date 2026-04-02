@@ -22,6 +22,7 @@ import {
 import Dropdown, { DropdownItem } from "@/shared/ui/Dropdown";
 import { useMemo, useState } from "react";
 
+import React from "react"
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 

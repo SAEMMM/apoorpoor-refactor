@@ -4,6 +4,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 
 import { ExpenseSummaryItem } from "../types";
+import React from "react"
 import { colors } from "@/styles/theme/tokens/color";
 
 interface DetailListProps {

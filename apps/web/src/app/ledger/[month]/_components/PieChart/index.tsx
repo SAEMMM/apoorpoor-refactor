@@ -15,6 +15,7 @@ import type { BubblePosition, PieChartProps } from "./types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DetailList } from "./DetailList";
+import React from "react"
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 
