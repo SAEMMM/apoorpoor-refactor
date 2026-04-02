@@ -364,7 +364,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <List />
+      <List days={days} />
     </PageContainer>
   );
 }
