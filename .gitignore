@@ -43,9 +43,6 @@ next-env.d.ts
 **/node_modules
 **/.next
 **/dist
-**/.turbo**/node_modules
-**/.next
-**/dist
 **/.turbo
 .env
 .env.local
