@@ -11,23 +11,21 @@ import {
 } from "react-day-picker";
 import { ko } from "react-day-picker/locale";
 import "react-day-picker/style.css";
-import React from "react"
+import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
-import type { MonthlyLedger } from "@/mocks/ledger";
 import "./Calendar.css";
+import type { LedgerDashboardResponse } from "@repo/shared";
 
 interface CalendarProps {
-  month: string; // YYYY-MM
-  monthlyLedger: MonthlyLedger;
+  month: string;
+  calendar: LedgerDashboardResponse["calendar"];
 }
 
 function getDailyAmountMap(
-  monthlyLedger: MonthlyLedger,
+  calendar: LedgerDashboardResponse["calendar"],
 ): Record<string, number> {
-  return monthlyLedger.days.reduce<Record<string, number>>((acc, day) => {
-    const totalAmount = day.items.reduce((sum, item) => sum + item.amount, 0);
-
-    acc[day.date] = totalAmount;
+  return calendar.reduce<Record<string, number>>((acc, day) => {
+    acc[day.date] = day.income - day.expense;
     return acc;
   }, {});
 }
@@ -131,8 +129,8 @@ function LedgerDayButton(props: LedgerDayButtonProps) {
   );
 }
 
-export const Calendar = ({ month, monthlyLedger }: CalendarProps) => {
-  const amountMap = getDailyAmountMap(monthlyLedger);
+export const Calendar = ({ month, calendar }: CalendarProps) => {
+  const amountMap = getDailyAmountMap(calendar);
 
   return (
     <DayPicker

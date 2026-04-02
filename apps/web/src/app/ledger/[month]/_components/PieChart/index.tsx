@@ -12,10 +12,11 @@ import {
 } from "chart.js";
 import { Bubble, ChartWrapper, TitleWrapper, Wrapper } from "./styles";
 import type { BubblePosition, PieChartProps } from "./types";
+import { getChartSummary, getDetailListItems } from "./types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { DetailList } from "./DetailList";
-import React from "react"
+import React from "react";
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 
@@ -28,8 +29,7 @@ const EMPTY_CHART_ITEMS = [
 ];
 
 export const PieChart = ({
-  chartItems,
-  listItems,
+  categorySummary,
   selectedIndex: initialSelectedIndex = 0,
 }: PieChartProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -38,6 +38,12 @@ export const PieChart = ({
     null,
   );
   const [selectedIndex, setSelectedIndex] = useState(initialSelectedIndex);
+
+  const listItems = useMemo(
+    () => getDetailListItems(categorySummary),
+    [categorySummary],
+  );
+  const chartItems = useMemo(() => getChartSummary(listItems), [listItems]);
 
   const isEmpty = chartItems.length === 0;
 

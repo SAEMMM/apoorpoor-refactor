@@ -10,15 +10,16 @@ import { useRouter } from "next/navigation";
 
 type AccountBannerProps = {
   month: string;
-  hasAccount: boolean;
+  // hasAccount: boolean;
   monthlyExpense: number;
 };
 
 export const AccountBanner = ({
   month,
-  hasAccount,
+  // hasAccount,
   monthlyExpense,
 }: AccountBannerProps) => {
+  const hasAccount = true;
   const router = useRouter();
 
   return (

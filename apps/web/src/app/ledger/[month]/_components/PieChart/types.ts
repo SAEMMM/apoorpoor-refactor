@@ -1,4 +1,7 @@
-import type { LedgerCategory, MonthlyLedger } from "@/mocks/ledger";
+import type {
+  LedgerCategory,
+  LedgerDashboardResponse,
+} from "@repo/shared";
 
 import { colors } from "@/styles/theme/tokens/color";
 
@@ -24,8 +27,7 @@ export type ChartSummaryItem = {
 };
 
 export interface PieChartProps {
-  chartItems: ChartSummaryItem[];
-  listItems: ExpenseSummaryItem[];
+  categorySummary: LedgerDashboardResponse["categorySummary"];
   selectedIndex?: number;
 }
 
@@ -52,42 +54,22 @@ const RANK_COLORS = [
 
 const ETC_COLOR = colors.gray[150];
 
-export const getExpenseSummary = (
-  monthlyLedger: MonthlyLedger,
+export const getDetailListItems = (
+  categorySummary: LedgerDashboardResponse["categorySummary"],
 ): ExpenseSummaryItem[] => {
-  const expenseMap = new Map<LedgerCategory, number>();
-
-  monthlyLedger.days.forEach((day) => {
-    day.items.forEach((item) => {
-      if (item.type !== "expense") return;
-
-      const currentAmount = expenseMap.get(item.category) ?? 0;
-      expenseMap.set(item.category, currentAmount + Math.abs(item.amount));
-    });
-  });
-
-  const totalExpense = Array.from(expenseMap.values()).reduce(
-    (sum, amount) => sum + amount,
+  const totalExpense = categorySummary.reduce(
+    (sum, item) => sum + item.amount,
     0,
   );
 
-  return Array.from(expenseMap.entries())
-    .map(([category, amount], index, arr) => {
-      const sortedEntries = [...arr].sort((a, b) => b[1] - a[1]);
-      const rank = sortedEntries.findIndex(([key]) => key === category);
-
-      return {
-        category,
-        label: CATEGORY_LABEL_MAP[category],
-        amount,
-        percent:
-          totalExpense === 0 ? 0 : Math.round((amount / totalExpense) * 100),
-        color: rank >= 0 && rank < 4 ? RANK_COLORS[rank] : ETC_COLOR,
-      };
-    })
+  return [...categorySummary]
     .sort((a, b) => b.amount - a.amount)
     .map((item, index) => ({
-      ...item,
+      category: item.category,
+      label: CATEGORY_LABEL_MAP[item.category],
+      amount: item.amount,
+      percent:
+        totalExpense === 0 ? 0 : Math.round((item.amount / totalExpense) * 100),
       color: index < 4 ? RANK_COLORS[index] : ETC_COLOR,
     }));
 };

@@ -1,3 +1,5 @@
+import { LedgerDashboardResponse } from "@repo/shared";
+
 export const getMonthlyTotals = (
   days: { items: { type: string; amount: number }[] }[],
 ) => {
@@ -15,4 +17,19 @@ export const getMonthlyTotals = (
     },
     { income: 0, expense: 0 },
   );
+};
+
+export const EMPTY_DASHBOARD: LedgerDashboardResponse = {
+  summary: {
+    income: 0,
+    expense: 0,
+    remainingAmount: 0,
+  },
+  calendar: [],
+  categorySummary: [],
+  compare: {
+    month: [],
+    quarter: [],
+    year: [],
+  },
 };

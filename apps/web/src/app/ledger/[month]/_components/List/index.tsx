@@ -1,12 +1,27 @@
 "use client";
 
-import type { DailyLedger } from "@/mocks/ledger";
-import React from "react"
+import type { LedgerCategory, LedgerTransactionsResponse } from "@repo/shared";
+
+import React from "react";
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 
 type Props = {
-  days: DailyLedger[];
+  sections: LedgerTransactionsResponse["sections"];
+};
+
+const CATEGORY_LABEL_MAP: Record<LedgerCategory, string> = {
+  salary: "월급",
+  bonus: "보너스",
+  food: "식비",
+  cafe: "카페",
+  transport: "교통",
+  shopping: "쇼핑",
+  living: "생활",
+  health: "건강",
+  culture: "문화",
+  gift: "선물",
+  etc: "기타",
 };
 
 const formatCurrency = (value: number) => {
@@ -31,8 +46,10 @@ const getAmountColor = (amount: number) => {
   return amount > 0 ? colors.primary.main : colors.black;
 };
 
-export const List = ({ days }: Props) => {
-  const filteredDays = days.filter((day) => day.items.length > 0);
+export const List = ({ sections }: Props) => {
+  const filteredSections = sections.filter(
+    (section) => section.items.length > 0,
+  );
 
   return (
     <div>
@@ -40,15 +57,13 @@ export const List = ({ days }: Props) => {
         내역
       </Typography>
 
-      {filteredDays.map((day) => (
-        <div key={day.date} style={{ marginBottom: 24 }}>
-          {/* 날짜 */}
+      {filteredSections.map((section) => (
+        <div key={section.date} style={{ marginBottom: 24 }}>
           <Typography variant="body2" color={colors.gray[500]} mb="8px">
-            {formatDate(day.date)}
+            {formatDate(section.date)}
           </Typography>
 
-          {/* 아이템 */}
-          {day.items.map((item) => (
+          {section.items.map((item) => (
             <div
               key={item.id}
               style={{
@@ -59,18 +74,17 @@ export const List = ({ days }: Props) => {
                 borderBottom: `1px solid ${colors.gray[100]}`,
               }}
             >
-              {/* 왼쪽 */}
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <Typography variant="body1" fontWeight={700}>
                   {item.name}
                 </Typography>
 
                 <Typography variant="caption" color={colors.gray[400]}>
-                  {item.type === "income" ? "수입" : "지출"} · {item.category}
+                  {item.type === "income" ? "수입" : "지출"} ·{" "}
+                  {CATEGORY_LABEL_MAP[item.category]}
                 </Typography>
               </div>
 
-              {/* 오른쪽 */}
               <Typography
                 variant="body1"
                 fontWeight={700}

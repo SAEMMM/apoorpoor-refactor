@@ -8,21 +8,15 @@ import { LedgerDashboardResponse } from "@repo/shared";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import React from "react";
 import { SpendingChallengeBanner } from "./_components/SpendingChallengeBanner";
+import dayjs from "dayjs";
 
 const getCurrentMonthRange = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-
-  const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-  const endDate = `${year}-${String(
-    new Date(year, month + 1, 0).getDate(),
-  ).padStart(2, "0")}`;
+  const now = dayjs();
 
   return {
-    month: `${year}-${String(month + 1).padStart(2, "0")}`,
-    startDate,
-    endDate,
+    month: now.format("YYYY-MM"),
+    startDate: now.startOf("month").format("YYYY-MM-DD"),
+    endDate: now.endOf("month").format("YYYY-MM-DD"),
   };
 };
 
@@ -91,7 +85,7 @@ export default async function MainPage() {
       <Contents>
         <AccountBanner
           month={month}
-          hasAccount={hasAccount}
+          // hasAccount={hasAccount}
           monthlyExpense={monthlyExpense}
         />
 
