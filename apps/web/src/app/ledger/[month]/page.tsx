@@ -28,6 +28,7 @@ import PageContainer from "@/shared/ui/layout/PageContainer";
 import { PieChart } from "./_components/PieChart";
 import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
+import { fetchApi } from "@/shared/lib/fetchApi";
 import { getAdjacentMonth } from "@/features/ledger/utils/month";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
 import { notFound } from "next/navigation";
@@ -55,72 +56,32 @@ function getMonthDateRange(month: string) {
 async function getLedgerDashboard(
   month: string,
 ): Promise<LedgerDashboardResponse | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined.");
-  }
-
   const { startDate, endDate } = getMonthDateRange(month);
 
-  const searchParams = new URLSearchParams({
-    userId: "user-001",
-    startDate,
-    endDate,
-  });
-
-  const response = await fetch(
-    `${baseUrl}/ledger/dashboard?${searchParams.toString()}`,
-    {
-      cache: "no-store",
+  return fetchApi<LedgerDashboardResponse>({
+    path: "/ledger/dashboard",
+    searchParams: {
+      userId: "user-001",
+      startDate,
+      endDate,
     },
-  );
-
-  if (response.status === 404) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch ledger dashboard.");
-  }
-
-  return response.json();
+  });
 }
 
 async function getLedgerTransactions(
   month: string,
 ): Promise<LedgerTransactionsResponse | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined.");
-  }
-
   const { startDate, endDate } = getMonthDateRange(month);
 
-  const searchParams = new URLSearchParams({
-    userId: "user-001",
-    startDate,
-    endDate,
-    limit: "31",
-  });
-
-  const response = await fetch(
-    `${baseUrl}/ledger/transactions?${searchParams.toString()}`,
-    {
-      cache: "no-store",
+  return fetchApi<LedgerTransactionsResponse>({
+    path: "/ledger/transactions",
+    searchParams: {
+      userId: "user-001",
+      startDate,
+      endDate,
+      limit: "31",
     },
-  );
-
-  if (response.status === 404) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch ledger transactions.");
-  }
-
-  return response.json();
+  });
 }
 
 export default async function LedgerPage({ params }: LedgerPageProps) {
@@ -133,13 +94,18 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const prevMonth = getAdjacentMonth(month, "prev");
   const nextMonth = getAdjacentMonth(month, "next");
 
-  const [dashboard, transactions] = await Promise.all([
+  const [dashboardResult, transactionsResult] = await Promise.allSettled([
     getLedgerDashboard(month),
     getLedgerTransactions(month),
   ]);
 
-  const safeDashboard = dashboard ?? EMPTY_DASHBOARD;
+  const dashboard =
+    dashboardResult.status === "fulfilled" ? dashboardResult.value : null;
 
+  const transactions =
+    transactionsResult.status === "fulfilled" ? transactionsResult.value : null;
+
+  const safeDashboard = dashboard ?? EMPTY_DASHBOARD;
   const { summary, calendar, categorySummary, compare } = safeDashboard;
   const sections = transactions?.sections ?? [];
 

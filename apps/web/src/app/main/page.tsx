@@ -9,6 +9,7 @@ import PageContainer from "@/shared/ui/layout/PageContainer";
 import React from "react";
 import { SpendingChallengeBanner } from "./_components/SpendingChallengeBanner";
 import dayjs from "dayjs";
+import { fetchApi } from "@/shared/lib/fetchApi";
 
 const getCurrentMonthRange = () => {
   const now = dayjs();
@@ -24,34 +25,14 @@ const getLedgerDashboard = async (
   startDate: string,
   endDate: string,
 ): Promise<LedgerDashboardResponse | null> => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined.");
-  }
-
-  const searchParams = new URLSearchParams({
-    userId: "user-001",
-    startDate,
-    endDate,
-  });
-
-  const response = await fetch(
-    `${baseUrl}/ledger/dashboard?${searchParams.toString()}`,
-    {
-      cache: "no-store",
+  return fetchApi<LedgerDashboardResponse>({
+    path: "/ledger/dashboard",
+    searchParams: {
+      userId: "user-001",
+      startDate,
+      endDate,
     },
-  );
-
-  if (response.status === 404) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch ledger dashboard.");
-  }
-
-  return response.json();
+  });
 };
 
 export default async function MainPage() {
