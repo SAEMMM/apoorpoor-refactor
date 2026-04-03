@@ -1,24 +1,30 @@
+import "server-only";
+
 type FetchApiOptions = {
   path: string;
   searchParams?: Record<string, string>;
 };
 
+function getBaseUrl() {
+  const baseUrl = process.env.API_BASE_URL;
+
+  if (!baseUrl) {
+    throw new Error("API_BASE_URL is not defined.");
+  }
+
+  return baseUrl;
+}
+
 export async function fetchApi<T>({
   path,
   searchParams,
 }: FetchApiOptions): Promise<T | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined.");
-  }
-
-  const url = new URL(path, baseUrl);
+  const url = new URL(path, getBaseUrl());
 
   if (searchParams) {
-    Object.entries(searchParams).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(searchParams)) {
       url.searchParams.set(key, value);
-    });
+    }
   }
 
   let response: Response;
@@ -28,31 +34,38 @@ export async function fetchApi<T>({
       cache: "no-store",
     });
   } catch (error) {
-    console.error("[fetchApi] network error:", url.toString(), error);
+    const cause = (error as { cause?: { code?: string } })?.cause;
+    const isConnRefused = cause?.code === "ECONNREFUSED";
+
+    if (!isConnRefused) {
+      console.error("[fetchApi] network error", {
+        url: url.toString(),
+        error,
+      });
+    }
+
     return null;
   }
-
-  const text = await response.text();
 
   if (response.status === 404) {
     return null;
   }
 
   if (!response.ok) {
-    console.error("[fetchApi] request failed:", {
+    const body = await response.text().catch(() => "");
+    console.error("[fetchApi] request failed", {
       url: url.toString(),
       status: response.status,
-      body: text,
+      body,
     });
     return null;
   }
 
   try {
-    return JSON.parse(text) as T;
+    return (await response.json()) as T;
   } catch (error) {
-    console.error("[fetchApi] json parse failed:", {
+    console.error("[fetchApi] invalid json response", {
       url: url.toString(),
-      body: text,
       error,
     });
     return null;
