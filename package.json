@@ -3,14 +3,17 @@
   "private": true,
   "packageManager": "pnpm@10.17.1",
   "scripts": {
-    "dev:web": "pnpm --filter web dev",
+    "dev:web": "pnpm --filter web exec next dev --webpack",
     "dev:api": "pnpm --filter api dev",
-    "dev": "pnpm -r --parallel --stream dev",
+    "dev:web:wait": "wait-on tcp:127.0.0.1:3001 && pnpm --filter web dev",
+    "dev": "concurrently --names API,WEB --prefix-colors blue,green --restart-tries 5 --restart-after 2000 \"pnpm dev:api\" \"pnpm dev:web:wait\"",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r lint"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
+    "wait-on": "^8.0.3",
     "typescript": "^5.9.3"
   }
 }

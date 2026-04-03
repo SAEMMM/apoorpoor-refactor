@@ -1,10 +1,13 @@
-import { Hono } from "hono";
-import { ledgerRoute } from "./routes/ledger";
+import app from "./app";
 import { serve } from "@hono/node-server";
 
-const app = new Hono();
+process.on("uncaughtException", (error) => {
+  console.error("[api] uncaughtException", error);
+});
 
-app.route("/ledger", ledgerRoute);
+process.on("unhandledRejection", (reason) => {
+  console.error("[api] unhandledRejection", reason);
+});
 
 serve(
   {
