@@ -61,7 +61,7 @@ src/
 ## 🚀 실행 방법
 ```ts
 pnpm install
-pnpm run dev
+pnpm dev
 ```
 
 ---

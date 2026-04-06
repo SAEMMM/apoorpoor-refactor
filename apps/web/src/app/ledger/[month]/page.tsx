@@ -19,7 +19,9 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { BarChart } from "./_components/BarChart";
 import { Calendar } from "./_components/Calendar";
+import { DailyDrawer } from "./_components/DailyDrawer";
 import { Divider } from "./_components/Divider";
+import { Drawer } from "@/shared/ui/Drawer";
 import { EMPTY_DASHBOARD } from "./types";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
@@ -109,8 +111,6 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const { summary, calendar, categorySummary, compare } = safeDashboard;
   const sections = transactions?.sections ?? [];
 
-  console.log("dashboard", dashboard);
-  console.log("compare", safeDashboard.compare);
   return (
     <PageContainer sx={{ gap: "30px" }}>
       <Wrapper>
@@ -163,7 +163,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
         <AmountWrapper>
           <MonthlyTotalWrapper>
             <Typography variant="body2" fontWeight={700}>
-              이번달 지출
+              이번달 소비
             </Typography>
 
             <Typography variant="h1" color={colors.primary.main}>
@@ -222,6 +222,17 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
       <Divider />
 
       <List sections={sections} />
+
+      <Drawer
+        open={true}
+        title={
+          <Typography variant="h2" color={colors.primary.main}>
+            5월 3일 화요일
+          </Typography>
+        }
+      >
+        <DailyDrawer />
+      </Drawer>
     </PageContainer>
   );
 }

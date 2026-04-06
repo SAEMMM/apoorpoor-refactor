@@ -35,7 +35,6 @@ export const BarChart = ({
 
   const items = compareData[selectedPeriod] ?? [];
   const isEmpty = items.length < 2;
-  console.log(selectedPeriod, items);
 
   const previousItem = items[0] ?? { label: "", amount: 0 };
   const currentItem = items[1] ?? { label: "", amount: 0 };
