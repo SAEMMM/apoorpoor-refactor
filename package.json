@@ -11,9 +11,16 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r lint"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "prisma"
+    ]
+  },
   "devDependencies": {
     "concurrently": "^9.2.1",
-    "wait-on": "^8.0.3",
-    "typescript": "^5.9.3"
+    "prisma": "^6.19.3",
+    "typescript": "^5.9.3",
+    "wait-on": "^8.0.3"
   }
 }

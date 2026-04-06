@@ -35,12 +35,11 @@ export const BarChart = ({
 
   const items = compareData[selectedPeriod] ?? [];
   const isEmpty = items.length < 2;
+  console.log(selectedPeriod, items);
 
-  // 👇 먼저 안전하게 기본값 세팅
   const previousItem = items[0] ?? { label: "", amount: 0 };
   const currentItem = items[1] ?? { label: "", amount: 0 };
 
-  // 👇 Hook은 항상 실행
   const maxAmount = useMemo(
     () => Math.max(previousItem.amount, currentItem.amount, 1),
     [previousItem.amount, currentItem.amount],
@@ -110,16 +109,6 @@ export const BarChart = ({
       </Wrapper>
     );
   }
-
-  // const [previousItem, currentItem] = items;
-
-  // const maxAmount = useMemo(
-  //   () => Math.max(previousItem.amount, currentItem.amount, 1),
-  //   [previousItem.amount, currentItem.amount],
-  // );
-
-  // const previousHeight = (previousItem.amount / maxAmount) * 100;
-  // const currentHeight = (currentItem.amount / maxAmount) * 100;
 
   return (
     <Wrapper>

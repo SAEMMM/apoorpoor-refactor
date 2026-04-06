@@ -109,6 +109,8 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const { summary, calendar, categorySummary, compare } = safeDashboard;
   const sections = transactions?.sections ?? [];
 
+  console.log("dashboard", dashboard);
+  console.log("compare", safeDashboard.compare);
   return (
     <PageContainer sx={{ gap: "30px" }}>
       <Wrapper>

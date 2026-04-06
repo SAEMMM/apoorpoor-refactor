@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LedgerType {
+  income
+  expense
+}
+
+enum LedgerCategory {
+  salary
+  bonus
+  food
+  cafe
+  transport
+  shopping
+  living
+  health
+  culture
+  gift
+  etc
+}
+
+model LedgerItem {
+  id        String         @id @default(cuid())
+  userId    String
+  name      String
+  type      LedgerType
+  category  LedgerCategory
+  amount    Int
+  date      DateTime       @db.Date
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
+  @@map("ledger_items")
+}
