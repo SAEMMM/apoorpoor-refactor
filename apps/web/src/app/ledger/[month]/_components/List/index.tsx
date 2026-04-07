@@ -1,10 +1,10 @@
 "use client";
 
+import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
+import { EmptyWrapper } from "./styles";
 import type { LedgerTransactionsResponse } from "@repo/shared";
-
 import React from "react";
 import { Typography } from "@mui/material";
-import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
 import { colors } from "@/styles/theme/tokens/color";
 
 type Props = {
@@ -43,6 +43,27 @@ export const List = ({ sections }: Props) => {
       <Typography variant="h2" fontWeight={700} mb="16px">
         내역
       </Typography>
+
+      {filteredSections.length === 0 && (
+        <EmptyWrapper>
+          <Typography
+            fontSize={"40px"}
+            fontWeight={700}
+            color={colors.gray[350]}
+          >
+            텅 비었네요
+          </Typography>
+          <Typography
+            textAlign={"center"}
+            variant="body2"
+            color={colors.gray[350]}
+          >
+            가계부를 작성하고
+            <br />
+            포인트를 받아보세요
+          </Typography>
+        </EmptyWrapper>
+      )}
 
       {filteredSections.map((section) => (
         <div key={section.date} style={{ marginBottom: 24 }}>

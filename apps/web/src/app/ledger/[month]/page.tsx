@@ -223,7 +223,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <BarChart compareData={compare} />
+      <BarChart month={month} compareData={compare} />
 
       <Divider />
 

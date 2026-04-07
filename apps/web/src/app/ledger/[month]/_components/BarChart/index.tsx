@@ -16,7 +16,7 @@ import {
   ComparePeriodType,
   formatChartAmount,
   getCompareDescription,
-  getCompareTitle,
+  getEmptyLabels,
   getPeriodTriggerLabel,
 } from "./types";
 import Dropdown, { DropdownItem } from "@/shared/ui/Dropdown";
@@ -27,6 +27,7 @@ import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
 
 export const BarChart = ({
+  month,
   compareData,
   defaultPeriod = "month",
 }: BarChartProps) => {
@@ -46,6 +47,8 @@ export const BarChart = ({
 
   const previousHeight = (previousItem.amount / maxAmount) * 100;
   const currentHeight = (currentItem.amount / maxAmount) * 100;
+
+  const emptyLabels = getEmptyLabels(month, selectedPeriod);
 
   if (isEmpty) {
     return (
@@ -78,30 +81,54 @@ export const BarChart = ({
               </Dropdown>
             </div>
 
-            <Typography variant="h2">
-              {getCompareTitle(selectedPeriod)}
-            </Typography>
+            <Typography variant="h2">대비 지출금액</Typography>
           </ChartTitleRow>
 
           <Description variant="body1">
-            비교할 소비 데이터가 아직 없어요.
+            가계부를 작성하고 지출을 확인해보세요!
           </Description>
         </ChartHeader>
 
         <ChartContent>
-          <div
-            style={{
-              width: "100%",
-              minHeight: 180,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="body2" color={colors.gray[450]}>
-              가계부를 작성하면 기간별 소비 비교를 볼 수 있어요.
-            </Typography>
-          </div>
+          <BarsWrapper>
+            <BarItem>
+              <Typography
+                variant="body2"
+                fontWeight={700}
+                color={colors.gray[450]}
+              >
+                ?원
+              </Typography>
+              <Bar heightPercent={80} backgroundColor={colors.gray[250]}>
+                <Typography
+                  variant="body2"
+                  fontWeight={700}
+                  color={colors.white}
+                >
+                  {emptyLabels.previous}
+                </Typography>
+              </Bar>
+            </BarItem>
+
+            <BarItem>
+              <Typography
+                variant="body2"
+                fontWeight={700}
+                color={colors.gray[450]}
+              >
+                ?원
+              </Typography>
+              <Bar heightPercent={100} backgroundColor={colors.primary.l[600]}>
+                <Typography
+                  variant="body2"
+                  fontWeight={700}
+                  color={colors.white}
+                >
+                  {emptyLabels.current}
+                </Typography>
+              </Bar>
+            </BarItem>
+          </BarsWrapper>
 
           <ChartBottomLine />
         </ChartContent>
@@ -139,9 +166,7 @@ export const BarChart = ({
             </Dropdown>
           </div>
 
-          <Typography variant="h2">
-            {getCompareTitle(selectedPeriod)}
-          </Typography>
+          <Typography variant="h2">대비 지출금액</Typography>
         </ChartTitleRow>
 
         <Description variant="body1">

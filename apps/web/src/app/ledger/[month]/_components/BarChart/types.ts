@@ -3,8 +3,35 @@ import type { LedgerCompareItem, LedgerDashboardResponse } from "@repo/shared";
 export type ComparePeriodType = "month" | "quarter" | "year";
 
 export interface BarChartProps {
+  month: string;
   compareData: LedgerDashboardResponse["compare"];
   defaultPeriod?: ComparePeriodType;
+}
+
+function getQuarter(m: number) {
+  return Math.floor((m - 1) / 3) + 1;
+}
+
+export function getEmptyLabels(
+  month: string,
+  period: ComparePeriodType,
+): { previous: string; current: string } {
+  const m = Number(month.slice(5, 7));
+  const y = Number(month.slice(0, 4));
+
+  switch (period) {
+    case "month": {
+      const prev = m === 1 ? 12 : m - 1;
+      return { previous: `${prev}월`, current: `${m}월` };
+    }
+    case "quarter": {
+      const cq = getQuarter(m);
+      const pq = cq === 1 ? 4 : cq - 1;
+      return { previous: `${pq}분기`, current: `${cq}분기` };
+    }
+    case "year":
+      return { previous: `${y - 1}년`, current: `${y}년` };
+  }
 }
 
 export const getPeriodTriggerLabel = (period: ComparePeriodType) => {
@@ -17,19 +44,6 @@ export const getPeriodTriggerLabel = (period: ComparePeriodType) => {
       return "전년도";
     default:
       return "전달";
-  }
-};
-
-export const getCompareTitle = (period: ComparePeriodType) => {
-  switch (period) {
-    case "month":
-      return "대비 소비했어요";
-    case "quarter":
-      return "대비 소비했어요";
-    case "year":
-      return "대비 소비했어요";
-    default:
-      return "대비 소비했어요";
   }
 };
 
