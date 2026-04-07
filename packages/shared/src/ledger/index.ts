@@ -1,3 +1,12 @@
+export type LedgerSettingsResponse = {
+  name: string;
+  points: number;
+};
+
+export type UpdateLedgerSettingsRequest = {
+  name: string;
+};
+
 export type LedgerType = "income" | "expense";
 
 export type LedgerCategory =

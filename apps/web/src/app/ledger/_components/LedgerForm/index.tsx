@@ -34,6 +34,7 @@ import TextField from "@/shared/ui/TextField";
 import { colors } from "@/styles/theme/tokens/color";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/shared/ui/Snackbar/SnackbarProvider";
 
 dayjs.locale("ko");
 
@@ -121,6 +122,7 @@ function formatDateLabel(dateStr: string): string {
 
 export const LedgerForm = ({ month, date, defaultValues }: LedgerFormProps) => {
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
   const [isPending, startTransition] = useTransition();
   const isEdit = Boolean(defaultValues);
 
@@ -258,6 +260,9 @@ export const LedgerForm = ({ month, date, defaultValues }: LedgerFormProps) => {
         });
       }
 
+      if (!isEdit) {
+        showSnackbar({ message: "10 포인트가 적립 되었어요.", variant: "success" });
+      }
       router.push(`/ledger/${month}`);
     });
   };

@@ -4,7 +4,7 @@ import { Contents, Header } from "./styles";
 import { AccountBanner } from "./_components/AccountBanner";
 import { GrowPoorBanner } from "./_components/GrowPoorBanner";
 import Image from "next/image";
-import { LedgerDashboardResponse } from "@repo/shared";
+import { LedgerDashboardResponse, LedgerSettingsResponse } from "@repo/shared";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import React from "react";
 import { SpendingChallengeBanner } from "./_components/SpendingChallengeBanner";
@@ -37,10 +37,18 @@ const getLedgerDashboard = async (
 
 export default async function MainPage() {
   const { month, startDate, endDate } = getCurrentMonthRange();
-  const dashboard = await getLedgerDashboard(startDate, endDate);
+
+  const [dashboard, settings] = await Promise.all([
+    getLedgerDashboard(startDate, endDate),
+    fetchApi<LedgerSettingsResponse>({
+      path: "/ledger/settings",
+      searchParams: { userId: "user-001" },
+    }),
+  ]);
 
   const monthlyExpense = dashboard?.summary.expense ?? 0;
   const hasAccount = dashboard !== null;
+  const ledgerName = settings?.name ?? "가계부";
 
   return (
     <PageContainer>
@@ -66,7 +74,7 @@ export default async function MainPage() {
       <Contents>
         <AccountBanner
           month={month}
-          // hasAccount={hasAccount}
+          ledgerName={ledgerName}
           monthlyExpense={monthlyExpense}
         />
 

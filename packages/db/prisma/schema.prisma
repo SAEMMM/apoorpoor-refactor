@@ -26,6 +26,18 @@ enum LedgerCategory {
   etc
 }
 
+model Ledger {
+  id     String @id @default(cuid())
+  userId String @unique
+  name   String @default("가계부 이름")
+  points Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ledgers")
+}
+
 model LedgerItem {
   id        String         @id @default(cuid())
   userId    String

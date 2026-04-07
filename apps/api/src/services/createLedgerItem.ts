@@ -1,19 +1,28 @@
 import { prisma } from "@repo/db";
 import type { CreateLedgerItemRequest, LedgerItemResponse } from "@repo/shared";
 
+const POINTS_PER_CREATE = 10;
+
 export const createLedgerItem = async (
   data: CreateLedgerItemRequest,
 ): Promise<LedgerItemResponse> => {
-  const item = await prisma.ledgerItem.create({
-    data: {
-      userId: data.userId,
-      name: data.name,
-      type: data.type,
-      category: data.category,
-      amount: data.amount,
-      date: new Date(data.date),
-    },
-  });
+  const [item] = await prisma.$transaction([
+    prisma.ledgerItem.create({
+      data: {
+        userId: data.userId,
+        name: data.name,
+        type: data.type,
+        category: data.category,
+        amount: data.amount,
+        date: new Date(data.date),
+      },
+    }),
+    prisma.ledger.upsert({
+      where: { userId: data.userId },
+      update: { points: { increment: POINTS_PER_CREATE } },
+      create: { userId: data.userId, points: POINTS_PER_CREATE },
+    }),
+  ]);
 
   return {
     id: item.id,

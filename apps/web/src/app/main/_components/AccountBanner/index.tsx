@@ -10,13 +10,13 @@ import { useRouter } from "next/navigation";
 
 type AccountBannerProps = {
   month: string;
-  // hasAccount: boolean;
+  ledgerName: string;
   monthlyExpense: number;
 };
 
 export const AccountBanner = ({
   month,
-  // hasAccount,
+  ledgerName,
   monthlyExpense,
 }: AccountBannerProps) => {
   const hasAccount = true;
@@ -31,7 +31,7 @@ export const AccountBanner = ({
         {hasAccount ? (
           <Box>
             <Typography variant="h2" color={colors.white}>
-              가계부
+              {ledgerName}
             </Typography>
             <Typography variant="body2" color={colors.white}>
               쉽고 편한 가계부 작성

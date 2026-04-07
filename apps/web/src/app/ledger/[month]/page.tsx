@@ -4,12 +4,12 @@ import {
   HeaderWrapper,
   MonthWrapper,
   MonthlyTotalWrapper,
-  TitleWrapper,
   Wrapper,
 } from "./styles";
 import { IconButton, Typography } from "@mui/material";
 import type {
   LedgerDashboardResponse,
+  LedgerSettingsResponse,
   LedgerTransactionsResponse,
 } from "@repo/shared";
 
@@ -21,8 +21,8 @@ import { BarChart } from "./_components/BarChart";
 import { CalendarWithDrawer } from "./_components/CalendarWithDrawer";
 import { Divider } from "./_components/Divider";
 import { EMPTY_DASHBOARD } from "./types";
-import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
+import { LedgerTitle } from "./_components/LedgerTitle";
 import { List } from "./_components/List";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import { PieChart } from "./_components/PieChart";
@@ -94,10 +94,15 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const prevMonth = getAdjacentMonth(month, "prev");
   const nextMonth = getAdjacentMonth(month, "next");
 
-  const [dashboardResult, transactionsResult] = await Promise.allSettled([
-    getLedgerDashboard(month),
-    getLedgerTransactions(month),
-  ]);
+  const [dashboardResult, transactionsResult, settingsResult] =
+    await Promise.allSettled([
+      getLedgerDashboard(month),
+      getLedgerTransactions(month),
+      fetchApi<LedgerSettingsResponse>({
+        path: "/ledger/settings",
+        searchParams: { userId: "user-001" },
+      }),
+    ]);
 
   const dashboard =
     dashboardResult.status === "fulfilled" ? dashboardResult.value : null;
@@ -105,9 +110,13 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
   const transactions =
     transactionsResult.status === "fulfilled" ? transactionsResult.value : null;
 
+  const settings =
+    settingsResult.status === "fulfilled" ? settingsResult.value : null;
+
   const safeDashboard = dashboard ?? EMPTY_DASHBOARD;
   const { summary, calendar, categorySummary, compare } = safeDashboard;
   const sections = transactions?.sections ?? [];
+  const ledgerName = settings?.name ?? "가계부 이름";
 
   return (
     <PageContainer sx={{ gap: "30px" }}>
@@ -153,14 +162,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
           </Link>
         </HeaderWrapper>
 
-        <TitleWrapper>
-          <Typography variant="body2" color={colors.gray[500]}>
-            가계부 이름
-          </Typography>
-          <IconButton size="small">
-            <EditIcon sx={{ fontSize: 18, color: colors.gray[350] }} />
-          </IconButton>
-        </TitleWrapper>
+        <LedgerTitle initialName={ledgerName} />
 
         <AmountWrapper>
           <MonthlyTotalWrapper>

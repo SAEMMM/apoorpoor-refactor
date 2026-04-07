@@ -3,10 +3,27 @@ import { createLedgerItem } from "../services/createLedgerItem";
 import { deleteLedgerItem } from "../services/deleteLedgerItem";
 import { getLedgerDashboard } from "../services/getLedgerDashboard";
 import { getLedgerItem } from "../services/getLedgerItem";
+import { getLedgerSettings } from "../services/getLedgerSettings";
 import { getLedgerTransactions } from "../services/getLedgerTransactions";
 import { updateLedgerItem } from "../services/updateLedgerItem";
+import { updateLedgerSettings } from "../services/updateLedgerSettings";
 
 export const ledgerRoute = new Hono();
+
+ledgerRoute.get("/settings", async (c) => {
+  const userId = c.req.query("userId");
+  if (!userId) return c.json({ message: "userId is required" }, 400);
+  const data = await getLedgerSettings(userId);
+  return c.json(data);
+});
+
+ledgerRoute.patch("/settings", async (c) => {
+  const body = await c.req.json();
+  const { userId, name } = body;
+  if (!userId || !name) return c.json({ message: "userId, name are required" }, 400);
+  const data = await updateLedgerSettings(userId, name);
+  return c.json(data);
+});
 
 ledgerRoute.get("/dashboard", async (c) => {
   const userId = c.req.query("userId");
