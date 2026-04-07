@@ -27,12 +27,16 @@ export default function LoadingPage() {
   return (
     <Box
       sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
         width: "100%",
-        minHeight: "100dvh",
+        height: "100dvh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: colors.white,
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        zIndex: 1300,
         boxSizing: "border-box",
       }}
     >

@@ -77,7 +77,7 @@ export const CalendarWithDrawer = ({
           ) : undefined
         }
       >
-        <DailyDrawer items={selectedItems} />
+        <DailyDrawer month={month} date={selectedIso ?? ""} items={selectedItems} />
       </Drawer>
     </>
   );

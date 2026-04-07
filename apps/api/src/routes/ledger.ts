@@ -1,6 +1,10 @@
 import { Hono } from "hono";
+import { createLedgerItem } from "../services/createLedgerItem";
+import { deleteLedgerItem } from "../services/deleteLedgerItem";
 import { getLedgerDashboard } from "../services/getLedgerDashboard";
+import { getLedgerItem } from "../services/getLedgerItem";
 import { getLedgerTransactions } from "../services/getLedgerTransactions";
+import { updateLedgerItem } from "../services/updateLedgerItem";
 
 export const ledgerRoute = new Hono();
 
@@ -24,6 +28,64 @@ ledgerRoute.get("/dashboard", async (c) => {
   }
 
   return c.json(data);
+});
+
+ledgerRoute.get("/items/:id", async (c) => {
+  const id = c.req.param("id");
+  const data = await getLedgerItem(id);
+
+  if (!data) {
+    return c.json({ message: "Item not found" }, 404);
+  }
+
+  return c.json(data);
+});
+
+ledgerRoute.post("/items", async (c) => {
+  const body = await c.req.json();
+  const { userId, name, type, category, amount, date } = body;
+
+  if (!userId || !name || !type || !category || amount === undefined || !date) {
+    return c.json(
+      { message: "userId, name, type, category, amount, date are required" },
+      400,
+    );
+  }
+
+  const data = await createLedgerItem({
+    userId,
+    name,
+    type,
+    category,
+    amount,
+    date,
+  });
+
+  return c.json(data, 201);
+});
+
+ledgerRoute.patch("/items/:id", async (c) => {
+  const id = c.req.param("id");
+  const body = await c.req.json();
+
+  const data = await updateLedgerItem(id, body);
+
+  if (!data) {
+    return c.json({ message: "Item not found" }, 404);
+  }
+
+  return c.json(data);
+});
+
+ledgerRoute.delete("/items/:id", async (c) => {
+  const id = c.req.param("id");
+  const deleted = await deleteLedgerItem(id);
+
+  if (!deleted) {
+    return c.json({ message: "Item not found" }, 404);
+  }
+
+  return c.json({ message: "Deleted" });
 });
 
 ledgerRoute.get("/transactions", async (c) => {

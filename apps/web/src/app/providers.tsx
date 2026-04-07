@@ -3,6 +3,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 import React from "react";
+import { SnackbarProvider } from "@/shared/ui/Snackbar/SnackbarProvider";
 import { theme } from "@/styles/theme";
 
 export default function Providers({
@@ -13,7 +14,7 @@ export default function Providers({
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <SnackbarProvider>{children}</SnackbarProvider>
     </ThemeProvider>
   );
 }

@@ -2,7 +2,9 @@ import "server-only";
 
 type FetchApiOptions = {
   path: string;
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   searchParams?: Record<string, string>;
+  body?: unknown;
 };
 
 function getBaseUrl() {
@@ -17,7 +19,9 @@ function getBaseUrl() {
 
 export async function fetchApi<T>({
   path,
+  method = "GET",
   searchParams,
+  body,
 }: FetchApiOptions): Promise<T | null> {
   const url = new URL(path, getBaseUrl());
 
@@ -31,7 +35,12 @@ export async function fetchApi<T>({
 
   try {
     response = await fetch(url.toString(), {
+      method,
       cache: "no-store",
+      ...(body !== undefined && {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }),
     });
   } catch (error) {
     const cause = (error as { cause?: { code?: string } })?.cause;

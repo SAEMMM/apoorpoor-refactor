@@ -174,9 +174,10 @@ export default function Dropdown({
           paper: {
             sx: {
               width: openAnchor?.clientWidth ?? undefined,
+              maxHeight: "50dvh",
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              overflow: "hidden",
+              overflowY: "auto",
             },
           },
         }}

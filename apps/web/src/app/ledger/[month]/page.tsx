@@ -117,7 +117,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
             <IconButton>
               <ArrowBackIosNewIcon
                 fontSize="large"
-                sx={{ color: colors.black }}
+                sx={{ width: "24px", height: "24px", color: colors.black }}
               />
             </IconButton>
           </Link>
@@ -144,9 +144,13 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
             </Link>
           </MonthWrapper>
 
-          <IconButton>
-            <AddIcon fontSize="large" sx={{ color: colors.black }} />
-          </IconButton>
+          <Link href={`/ledger/${month}/create`}>
+            <IconButton>
+              <AddIcon
+                sx={{ width: "24px", height: "24px", color: colors.black }}
+              />
+            </IconButton>
+          </Link>
         </HeaderWrapper>
 
         <TitleWrapper>
@@ -207,7 +211,11 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <CalendarWithDrawer month={month} calendar={calendar} sections={sections} />
+      <CalendarWithDrawer
+        month={month}
+        calendar={calendar}
+        sections={sections}
+      />
 
       <Divider />
 

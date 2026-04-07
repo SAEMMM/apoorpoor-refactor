@@ -14,12 +14,18 @@ import { IconButton, Popover, Typography } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
+import Link from "next/link";
 import type { LedgerItem } from "@repo/shared";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
+import { deleteLedgerItemAction } from "@/features/ledger/actions/ledgerItem";
+import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/shared/ui/Snackbar/SnackbarProvider";
 
 interface DailyDrawerProps {
+  month: string;
+  date: string;
   items: LedgerItem[];
 }
 
@@ -27,15 +33,20 @@ const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("ko-KR").format(Math.abs(value));
 };
 
-export const DailyDrawer = ({ items }: DailyDrawerProps) => {
+export const DailyDrawer = ({ month, date, items }: DailyDrawerProps) => {
+  const router = useRouter();
+  const { showSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [menuItemId, setMenuItemId] = React.useState<string | null>(null);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, itemId: string) => {
     setAnchorEl(event.currentTarget);
+    setMenuItemId(itemId);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setMenuItemId(null);
   };
 
   return (
@@ -56,7 +67,7 @@ export const DailyDrawer = ({ items }: DailyDrawerProps) => {
                   ? `-${formatCurrency(item.amount)}원`
                   : `+${formatCurrency(item.amount)}원`}
               </Typography>
-              <IconButton size="small" onClick={handleMenuOpen}>
+              <IconButton size="small" onClick={(e) => handleMenuOpen(e, item.id)}>
                 <MoreVertIcon fontSize="small" sx={{ color: "#D9D9D9" }} />
               </IconButton>
             </RowWrapper>
@@ -64,15 +75,17 @@ export const DailyDrawer = ({ items }: DailyDrawerProps) => {
         ))}
       </ItemsWrapper>
 
-      <AddItemButton>
-        <Circle>
-          <AddIcon fontSize="small" sx={{ color: colors.gray[400] }} />
-        </Circle>
+      <Link href={`/ledger/${month}/create?date=${date}`} style={{ textDecoration: "none" }}>
+        <AddItemButton>
+          <Circle>
+            <AddIcon fontSize="small" sx={{ color: colors.gray[400] }} />
+          </Circle>
 
-        <Typography variant="body1" color={colors.gray[450]}>
-          내역 추가
-        </Typography>
-      </AddItemButton>
+          <Typography variant="body1" color={colors.gray[450]}>
+            내역 추가
+          </Typography>
+        </AddItemButton>
+      </Link>
 
       <Popover
         open={Boolean(anchorEl)}
@@ -93,15 +106,34 @@ export const DailyDrawer = ({ items }: DailyDrawerProps) => {
         }}
       >
         <MoreFunctions>
-          <FunctionWrapper>
+          <FunctionWrapper
+            onClick={async () => {
+              if (!menuItemId) return;
+              handleMenuClose();
+              const success = await deleteLedgerItemAction(menuItemId);
+              if (success) {
+                showSnackbar({ message: "삭제되었습니다.", variant: "success" });
+                router.refresh();
+              } else {
+                showSnackbar({ message: "삭제에 실패했습니다.", variant: "error" });
+              }
+            }}
+            sx={{ cursor: "pointer" }}
+          >
             <Typography variant="caption" color={colors.system.error}>
               삭제
             </Typography>
           </FunctionWrapper>
 
-          <FunctionWrapper>
-            <Typography variant="caption">수정</Typography>
-          </FunctionWrapper>
+          <Link
+            href={`/ledger/${month}/${menuItemId}/edit`}
+            style={{ textDecoration: "none", color: "inherit" }}
+            onClick={handleMenuClose}
+          >
+            <FunctionWrapper>
+              <Typography variant="caption">수정</Typography>
+            </FunctionWrapper>
+          </Link>
         </MoreFunctions>
       </Popover>
     </>

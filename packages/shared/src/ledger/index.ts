@@ -65,6 +65,33 @@ export type LedgerDashboardResponse = {
   };
 };
 
+export type CreateLedgerItemRequest = {
+  userId: string;
+  name: string;
+  type: LedgerType;
+  category: LedgerCategory;
+  amount: number;
+  date: string; // YYYY-MM-DD
+};
+
+export type UpdateLedgerItemRequest = {
+  name?: string;
+  type?: LedgerType;
+  category?: LedgerCategory;
+  amount?: number;
+  date?: string; // YYYY-MM-DD
+};
+
+export type LedgerItemResponse = {
+  id: string;
+  userId: string;
+  name: string;
+  type: LedgerType;
+  category: LedgerCategory;
+  amount: number;
+  date: string; // YYYY-MM-DD
+};
+
 export type LedgerTransactionSection = {
   date: string;
   items: LedgerItem[];
