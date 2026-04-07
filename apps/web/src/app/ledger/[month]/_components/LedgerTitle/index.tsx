@@ -30,7 +30,7 @@ export const LedgerTitle = ({ initialName }: LedgerTitleProps) => {
     const trimmed = draft.trim();
     if (!trimmed) return;
 
-    const result = await updateLedgerNameAction("user-001", trimmed);
+    const result = await updateLedgerNameAction(trimmed);
 
     if (result) {
       setName(result.name);

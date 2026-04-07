@@ -251,7 +251,6 @@ export const LedgerForm = ({ month, date, defaultValues }: LedgerFormProps) => {
         });
       } else {
         await createLedgerItemAction({
-          userId: "user-001",
           name: values.name.trim(),
           type: values.type,
           category: values.category as LedgerCategory,

@@ -4,16 +4,24 @@ import Dropdown, { DropdownItem } from "@/shared/ui/Dropdown";
 import { EmptyWrapper, FiltersWrapper } from "./styles";
 import type {
   LedgerCategory,
+  LedgerItem,
   LedgerTransactionsResponse,
   LedgerType,
 } from "@repo/shared";
 import React, { useMemo, useState } from "react";
 
 import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
+import { DailyDrawer } from "../DailyDrawer";
+import { Drawer } from "@/shared/ui/Drawer";
 import { Typography } from "@mui/material";
 import { colors } from "@/styles/theme/tokens/color";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+
+dayjs.locale("ko");
 
 type Props = {
+  month: string;
   sections: LedgerTransactionsResponse["sections"];
 };
 
@@ -61,9 +69,10 @@ const getAmountColor = (amount: number) => {
   return amount > 0 ? colors.primary.main : colors.black;
 };
 
-export const List = ({ sections }: Props) => {
+export const List = ({ month, sections }: Props) => {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const categoryOptions = useMemo(() => getCategoryOptions(typeFilter), [typeFilter]);
 
@@ -85,6 +94,10 @@ export const List = ({ sections }: Props) => {
       }))
       .filter((section) => section.items.length > 0);
   }, [sections, typeFilter, categoryFilter]);
+
+  const drawerItems: LedgerItem[] = selectedDate
+    ? sections.find((s) => s.date === selectedDate)?.items ?? []
+    : [];
 
   return (
     <div>
@@ -162,12 +175,14 @@ export const List = ({ sections }: Props) => {
           {section.items.map((item) => (
             <div
               key={item.id}
+              onClick={() => setSelectedDate(section.date)}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "14px 0",
                 borderBottom: `1px solid ${colors.gray[100]}`,
+                cursor: "pointer",
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -192,6 +207,26 @@ export const List = ({ sections }: Props) => {
           ))}
         </div>
       ))}
+
+      <Drawer
+        open={selectedDate !== null}
+        onClose={() => setSelectedDate(null)}
+        title={
+          selectedDate ? (
+            <Typography variant="h2" color={colors.primary.main}>
+              {dayjs(selectedDate).format("M월 D일 dddd")}
+            </Typography>
+          ) : undefined
+        }
+      >
+        {selectedDate && (
+          <DailyDrawer
+            month={month}
+            date={selectedDate}
+            items={drawerItems}
+          />
+        )}
+      </Drawer>
     </div>
   );
 };

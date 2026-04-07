@@ -8,37 +8,41 @@ import { getLedgerTransactions } from "../services/getLedgerTransactions";
 import { updateLedgerItem } from "../services/updateLedgerItem";
 import { updateLedgerSettings } from "../services/updateLedgerSettings";
 
-export const ledgerRoute = new Hono();
+type AuthEnv = {
+  Variables: {
+    userId: string;
+  };
+};
+
+export const ledgerRoute = new Hono<AuthEnv>();
 
 ledgerRoute.get("/settings", async (c) => {
-  const userId = c.req.query("userId");
-  if (!userId) return c.json({ message: "userId is required" }, 400);
+  const userId = c.get("userId");
   const data = await getLedgerSettings(userId);
   return c.json(data);
 });
 
 ledgerRoute.patch("/settings", async (c) => {
+  const userId = c.get("userId");
   const body = await c.req.json();
-  const { userId, name } = body;
-  if (!userId || !name) return c.json({ message: "userId, name are required" }, 400);
+  const { name } = body;
+
+  if (!name) return c.json({ message: "name is required" }, 400);
+
   const data = await updateLedgerSettings(userId, name);
   return c.json(data);
 });
 
 ledgerRoute.get("/dashboard", async (c) => {
-  const userId = c.req.query("userId");
+  const userId = c.get("userId");
   const startDate = c.req.query("startDate");
   const endDate = c.req.query("endDate");
 
-  if (!userId || !startDate || !endDate) {
-    return c.json({ message: "userId, startDate, endDate are required" }, 400);
+  if (!startDate || !endDate) {
+    return c.json({ message: "startDate, endDate are required" }, 400);
   }
 
-  const data = await getLedgerDashboard({
-    userId,
-    startDate,
-    endDate,
-  });
+  const data = await getLedgerDashboard({ userId, startDate, endDate });
 
   if (!data) {
     return c.json({ message: "Ledger not found" }, 404);
@@ -59,18 +63,18 @@ ledgerRoute.get("/items/:id", async (c) => {
 });
 
 ledgerRoute.post("/items", async (c) => {
+  const userId = c.get("userId");
   const body = await c.req.json();
-  const { userId, name, type, category, amount, date } = body;
+  const { name, type, category, amount, date } = body;
 
-  if (!userId || !name || !type || !category || amount === undefined || !date) {
+  if (!name || !type || !category || amount === undefined || !date) {
     return c.json(
-      { message: "userId, name, type, category, amount, date are required" },
+      { message: "name, type, category, amount, date are required" },
       400,
     );
   }
 
-  const data = await createLedgerItem({
-    userId,
+  const data = await createLedgerItem(userId, {
     name,
     type,
     category,
@@ -106,14 +110,14 @@ ledgerRoute.delete("/items/:id", async (c) => {
 });
 
 ledgerRoute.get("/transactions", async (c) => {
-  const userId = c.req.query("userId");
+  const userId = c.get("userId");
   const startDate = c.req.query("startDate");
   const endDate = c.req.query("endDate");
   const cursor = c.req.query("cursor");
   const limit = Number(c.req.query("limit") ?? 10);
 
-  if (!userId || !startDate || !endDate) {
-    return c.json({ message: "userId, startDate, endDate are required" }, 400);
+  if (!startDate || !endDate) {
+    return c.json({ message: "startDate, endDate are required" }, 400);
   }
 
   const data = await getLedgerTransactions({

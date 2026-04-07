@@ -1,5 +1,8 @@
 import "server-only";
 
+import { cookies } from "next/headers";
+import { JWT_COOKIE_NAME } from "@repo/shared";
+
 type FetchApiOptions = {
   path: string;
   method?: "GET" | "POST" | "PATCH" | "DELETE";
@@ -31,16 +34,27 @@ export async function fetchApi<T>({
     }
   }
 
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get(JWT_COOKIE_NAME)?.value;
+
+  const headers: Record<string, string> = {};
+
+  if (authToken) {
+    headers["Cookie"] = `${JWT_COOKIE_NAME}=${authToken}`;
+  }
+
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
   let response: Response;
 
   try {
     response = await fetch(url.toString(), {
       method,
       cache: "no-store",
-      ...(body !== undefined && {
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }),
+      headers,
+      ...(body !== undefined && { body: JSON.stringify(body) }),
     });
   } catch (error) {
     const cause = (error as { cause?: { code?: string } })?.cause;

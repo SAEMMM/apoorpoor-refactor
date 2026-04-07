@@ -26,6 +26,21 @@ enum LedgerCategory {
   etc
 }
 
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+  poorName String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ledger      Ledger?
+  ledgerItems LedgerItem[]
+
+  @@map("users")
+}
+
 model Ledger {
   id     String @id @default(cuid())
   userId String @unique
@@ -34,6 +49,8 @@ model Ledger {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("ledgers")
 }
@@ -49,6 +66,8 @@ model LedgerItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId, date])
   @@map("ledger_items")

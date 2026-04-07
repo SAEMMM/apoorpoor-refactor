@@ -61,7 +61,6 @@ async function getLedgerDashboard(
   return fetchApi<LedgerDashboardResponse>({
     path: "/ledger/dashboard",
     searchParams: {
-      userId: "user-001",
       startDate,
       endDate,
     },
@@ -76,7 +75,6 @@ async function getLedgerTransactions(
   return fetchApi<LedgerTransactionsResponse>({
     path: "/ledger/transactions",
     searchParams: {
-      userId: "user-001",
       startDate,
       endDate,
       limit: "31",
@@ -100,7 +98,6 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
       getLedgerTransactions(month),
       fetchApi<LedgerSettingsResponse>({
         path: "/ledger/settings",
-        searchParams: { userId: "user-001" },
       }),
     ]);
 
@@ -229,7 +226,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <List sections={sections} />
+      <List month={month} sections={sections} />
     </PageContainer>
   );
 }

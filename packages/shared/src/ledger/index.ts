@@ -75,7 +75,6 @@ export type LedgerDashboardResponse = {
 };
 
 export type CreateLedgerItemRequest = {
-  userId: string;
   name: string;
   type: LedgerType;
   category: LedgerCategory;

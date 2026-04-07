@@ -1,13 +1,20 @@
-import { Box, IconButton } from "@mui/material";
+import {
+  AuthResponse,
+  LedgerDashboardResponse,
+  LedgerSettingsResponse,
+} from "@repo/shared";
+import { Box, IconButton, Typography } from "@mui/material";
 import { Contents, Header } from "./styles";
 
 import { AccountBanner } from "./_components/AccountBanner";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { GrowPoorBanner } from "./_components/GrowPoorBanner";
 import Image from "next/image";
-import { LedgerDashboardResponse, LedgerSettingsResponse } from "@repo/shared";
+import Link from "next/link";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import React from "react";
 import { SpendingChallengeBanner } from "./_components/SpendingChallengeBanner";
+import { colors } from "@/styles/theme/tokens/color";
 import dayjs from "dayjs";
 import { fetchApi } from "@/shared/lib/fetchApi";
 
@@ -28,7 +35,6 @@ const getLedgerDashboard = async (
   return fetchApi<LedgerDashboardResponse>({
     path: "/ledger/dashboard",
     searchParams: {
-      userId: "user-001",
       startDate,
       endDate,
     },
@@ -38,18 +44,21 @@ const getLedgerDashboard = async (
 export default async function MainPage() {
   const { month, startDate, endDate } = getCurrentMonthRange();
 
-  const [dashboard, settings] = await Promise.all([
+  const [dashboard, settings, auth] = await Promise.all([
     getLedgerDashboard(startDate, endDate),
     fetchApi<LedgerSettingsResponse>({
       path: "/ledger/settings",
-      searchParams: { userId: "user-001" },
+    }),
+    fetchApi<AuthResponse>({
+      path: "/auth/me",
     }),
   ]);
 
   const monthlyExpense = dashboard?.summary.expense ?? 0;
-  const hasAccount = dashboard !== null;
   const ledgerName = settings?.name ?? "가계부";
+  const user = auth?.user ?? null;
 
+  console.log(user);
   return (
     <PageContainer>
       <Header>
@@ -69,6 +78,15 @@ export default async function MainPage() {
             unoptimized
           />
         </IconButton>
+
+        <Link href="/user-info">
+          <IconButton size="small">
+            <AccountCircleIcon
+              fontSize="large"
+              sx={{ color: colors.gray[350] }}
+            />
+          </IconButton>
+        </Link>
       </Header>
 
       <Contents>

@@ -11,6 +11,8 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { colors } from "@/styles/theme/tokens/color";
 import { useState } from "react";
 
@@ -29,10 +31,15 @@ export default function TextField({
   onClear,
   onFocus,
   onBlur,
+  type,
   sx,
   ...props
 }: AppTextFieldProps) {
   const [focused, setFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPassword = type === "password";
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
   const hasValue =
     value !== undefined && value !== null && String(value).length > 0;
@@ -99,7 +106,27 @@ export default function TextField({
               ...sx,
             }}
             {...props}
+            type={inputType}
           />
+
+          {isPassword && (
+            <IconButton
+              onClick={() => setShowPassword((prev) => !prev)}
+              disableRipple
+              sx={{
+                p: 0,
+                ml: 1,
+                color: colors.gray[350],
+                "&:hover": { backgroundColor: "transparent" },
+              }}
+            >
+              {showPassword ? (
+                <VisibilityIcon sx={{ fontSize: 20 }} />
+              ) : (
+                <VisibilityOffIcon sx={{ fontSize: 20 }} />
+              )}
+            </IconButton>
+          )}
 
           {showClearButton ? (
             <IconButton

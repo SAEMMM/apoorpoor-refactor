@@ -4,7 +4,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 
 import { ExpenseSummaryItem } from "../types";
-import React from "react"
+import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
 
 interface DetailListProps {
@@ -62,20 +62,22 @@ export const DetailList = ({
         ))}
       </Stack>
 
-      <Button
-        variant="outlined"
-        fullWidth
-        onClick={() => setExpanded((prev) => !prev)}
-        sx={{
-          height: 48,
-          borderRadius: "12px",
-          borderColor: colors.gray[250],
-        }}
-      >
-        <Typography variant="body2" color={colors.gray[450]}>
-          {expanded ? "접기" : "더보기"}
-        </Typography>
-      </Button>
+      {items.length > initialVisibleCount && (
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() => setExpanded((prev) => !prev)}
+          sx={{
+            height: 48,
+            borderRadius: "12px",
+            borderColor: colors.gray[250],
+          }}
+        >
+          <Typography variant="body2" color={colors.gray[450]}>
+            {expanded ? "접기" : "더보기"}
+          </Typography>
+        </Button>
+      )}
     </Stack>
   );
 };

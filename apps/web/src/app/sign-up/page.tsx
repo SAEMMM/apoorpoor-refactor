@@ -14,7 +14,7 @@ import Button from "@/shared/ui/Button";
 import PageContainer from "@/shared/ui/layout/PageContainer";
 import TextField from "@/shared/ui/TextField";
 import { Typography } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { signUpAction } from "@/features/auth/actions/signUp";
 
 type SignupFormValues = {
   email: string;
@@ -74,8 +74,6 @@ function validateForm(values: SignupFormValues): SignupFormErrors {
 }
 
 export default function SignupPage() {
-  const router = useRouter();
-
   const [values, setValues] = useState<SignupFormValues>(INITIAL_VALUES);
   const [errors, setErrors] = useState<SignupFormErrors>({});
   const [touched, setTouched] = useState<
@@ -180,15 +178,16 @@ export default function SignupPage() {
     try {
       setIsSubmitting(true);
 
-      // TODO: 실제 회원가입 API 연결
-      // await signup(values);
-
-      console.log("회원가입 요청", {
+      const result = await signUpAction({
         email: values.email.trim(),
         password: values.password,
         poorName: values.poorName.trim(),
       });
-      router.push("/main")
+
+      if (result?.error) {
+        setErrors((prev) => ({ ...prev, email: result.error }));
+        setTouched((prev) => ({ ...prev, email: true }));
+      }
     } finally {
       setIsSubmitting(false);
     }
