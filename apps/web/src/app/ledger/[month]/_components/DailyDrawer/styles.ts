@@ -46,3 +46,18 @@ export const Circle = styled(Box)(() => ({
   alignItems: "center",
   justifyContent: "center",
 }));
+
+export const MoreFunctions = styled(Box)(() => ({
+  width: "fit-content",
+  display: "flex",
+  backgroundColor: "#F5F5F5",
+  borderRadius: "4px",
+}));
+
+export const FunctionWrapper = styled(Box)(() => ({
+  padding: "7px 12px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+}));

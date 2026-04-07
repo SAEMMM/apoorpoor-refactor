@@ -3,6 +3,7 @@ import type {
   LedgerDashboardResponse,
 } from "@repo/shared";
 
+import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
 import { colors } from "@/styles/theme/tokens/color";
 
 export type BubblePosition = {
@@ -30,20 +31,6 @@ export interface PieChartProps {
   categorySummary: LedgerDashboardResponse["categorySummary"];
   selectedIndex?: number;
 }
-
-const CATEGORY_LABEL_MAP: Record<LedgerCategory, string> = {
-  salary: "월급",
-  bonus: "보너스",
-  food: "식비",
-  cafe: "카페",
-  transport: "교통",
-  shopping: "쇼핑",
-  living: "생활",
-  health: "건강",
-  culture: "문화",
-  gift: "선물",
-  etc: "기타",
-};
 
 const RANK_COLORS = [
   colors.primary.main,

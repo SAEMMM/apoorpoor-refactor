@@ -14,23 +14,16 @@ import "react-day-picker/style.css";
 import React from "react";
 import { colors } from "@/styles/theme/tokens/color";
 import "./Calendar.css";
-import type { LedgerDashboardResponse } from "@repo/shared";
 
-interface CalendarProps {
+export interface CalendarProps {
   month: string;
-  calendar: LedgerDashboardResponse["calendar"];
+  readOnly?: boolean;
+  selected?: Date;
+  onSelect?: (date: Date) => void;
+  dailyAmounts?: Record<string, number>;
 }
 
-function getDailyAmountMap(
-  calendar: LedgerDashboardResponse["calendar"],
-): Record<string, number> {
-  return calendar.reduce<Record<string, number>>((acc, day) => {
-    acc[day.date] = day.income - day.expense;
-    return acc;
-  }, {});
-}
-
-function LedgerWeekday(props: WeekdayProps) {
+function CalendarWeekday(props: WeekdayProps) {
   const label = String(props.children);
 
   const color =
@@ -56,27 +49,44 @@ function LedgerWeekday(props: WeekdayProps) {
   );
 }
 
-interface LedgerDayButtonProps extends DayButtonProps {
-  amountMap: Record<string, number>;
+interface CalendarDayButtonProps extends DayButtonProps {
+  dailyAmounts?: Record<string, number>;
+  readOnly?: boolean;
+  selectedDate?: string;
+  onSelectDate?: (date: Date) => void;
 }
 
-function LedgerDayButton(props: LedgerDayButtonProps) {
-  const { amountMap, ...dayButtonProps } = props;
+function CalendarDayButton(props: CalendarDayButtonProps) {
+  const { dailyAmounts, readOnly, selectedDate, onSelectDate, ...dayButtonProps } = props;
   const { classNames } = useDayPicker();
 
   const isoDate = dayButtonProps.day.isoDate;
-  const amount = amountMap[isoDate];
+  const amount = dailyAmounts?.[isoDate];
 
   const isToday =
     dayjs().format("YYYY-MM-DD") ===
     dayjs(dayButtonProps.day.date).format("YYYY-MM-DD");
 
+  const isSelected = selectedDate === isoDate;
+
   if (dayButtonProps.modifiers.hidden || dayButtonProps.modifiers.outside) {
     return <DayButton {...dayButtonProps} />;
   }
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!readOnly && onSelectDate) {
+      onSelectDate(dayButtonProps.day.date);
+    }
+    dayButtonProps.onClick?.(e);
+  };
+
   return (
-    <DayButton {...dayButtonProps} className={classNames.day_button}>
+    <DayButton
+      {...dayButtonProps}
+      onClick={handleClick}
+      className={classNames.day_button}
+      style={{ cursor: readOnly ? "default" : "pointer" }}
+    >
       <div
         style={{
           width: "100%",
@@ -88,14 +98,16 @@ function LedgerDayButton(props: LedgerDayButtonProps) {
           position: "relative",
         }}
       >
-        {isToday && (
+        {(isToday || isSelected) && (
           <Box
             sx={{
               position: "absolute",
               top: -3,
               width: "28px",
               height: "28px",
-              backgroundColor: colors.gray[150],
+              backgroundColor: isSelected
+                ? colors.primary.main
+                : colors.gray[150],
               borderRadius: "99px",
             }}
           />
@@ -104,7 +116,13 @@ function LedgerDayButton(props: LedgerDayButtonProps) {
         <Typography
           variant="body2"
           fontWeight={700}
-          color={isToday ? colors.black : colors.gray[450]}
+          color={
+            isSelected
+              ? colors.white
+              : isToday
+                ? colors.black
+                : colors.gray[450]
+          }
           sx={{ zIndex: 1 }}
         >
           {dayButtonProps.day.date.getDate()}
@@ -129,13 +147,22 @@ function LedgerDayButton(props: LedgerDayButtonProps) {
   );
 }
 
-export const Calendar = ({ month, calendar }: CalendarProps) => {
-  const amountMap = getDailyAmountMap(calendar);
+export const Calendar = ({
+  month,
+  readOnly = false,
+  selected,
+  onSelect,
+  dailyAmounts,
+}: CalendarProps) => {
+  const selectedDate = selected
+    ? dayjs(selected).format("YYYY-MM-DD")
+    : undefined;
 
   return (
     <DayPicker
       mode="single"
       month={dayjs(`${month}-01`).toDate()}
+      selected={selected}
       showOutsideDays={false}
       fixedWeeks
       locale={ko}
@@ -145,9 +172,15 @@ export const Calendar = ({ month, calendar }: CalendarProps) => {
         justifyContent: "center",
       }}
       components={{
-        Weekday: LedgerWeekday,
+        Weekday: CalendarWeekday,
         DayButton: (props) => (
-          <LedgerDayButton {...props} amountMap={amountMap} />
+          <CalendarDayButton
+            {...props}
+            dailyAmounts={dailyAmounts}
+            readOnly={readOnly}
+            selectedDate={selectedDate}
+            onSelectDate={onSelect}
+          />
         ),
       }}
     />

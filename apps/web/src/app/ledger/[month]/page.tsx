@@ -18,10 +18,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { BarChart } from "./_components/BarChart";
-import { Calendar } from "./_components/Calendar";
-import { DailyDrawer } from "./_components/DailyDrawer";
+import { CalendarWithDrawer } from "./_components/CalendarWithDrawer";
 import { Divider } from "./_components/Divider";
-import { Drawer } from "@/shared/ui/Drawer";
 import { EMPTY_DASHBOARD } from "./types";
 import EditIcon from "@mui/icons-material/Edit";
 import Link from "next/link";
@@ -209,7 +207,7 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
 
       <Divider />
 
-      <Calendar month={month} calendar={calendar} />
+      <CalendarWithDrawer month={month} calendar={calendar} sections={sections} />
 
       <Divider />
 
@@ -222,17 +220,6 @@ export default async function LedgerPage({ params }: LedgerPageProps) {
       <Divider />
 
       <List sections={sections} />
-
-      <Drawer
-        open={true}
-        title={
-          <Typography variant="h2" color={colors.primary.main}>
-            5월 3일 화요일
-          </Typography>
-        }
-      >
-        <DailyDrawer />
-      </Drawer>
     </PageContainer>
   );
 }

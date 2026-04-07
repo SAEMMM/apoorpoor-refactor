@@ -9,7 +9,8 @@
     "dev": "concurrently --names API,WEB --prefix-colors blue,green --restart-tries 5 --restart-after 2000 \"pnpm dev:api\" \"pnpm dev:web:wait\"",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "db:setup": "docker compose up -d && pnpm --filter @repo/db exec prisma migrate deploy && pnpm --filter @repo/db exec prisma db seed"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

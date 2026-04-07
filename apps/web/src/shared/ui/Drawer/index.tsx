@@ -24,7 +24,7 @@ export const Drawer = (props: DrawerProps) => {
           {title && title}
 
           {onClose && (
-            <IconButton size="small" sx={{ ml: "auto" }}>
+            <IconButton size="small" sx={{ ml: "auto" }} onClick={onClose}>
               <ClearIcon fontSize="large" sx={{ color: colors.gray[400] }} />
             </IconButton>
           )}

@@ -28,11 +28,6 @@
   table-layout: fixed;
 }
 
-.rdp-month_grid {
-  width: 100%;
-  table-layout: fixed;
-}
-
 .rdp-day_button {
   width: 100%;
   min-height: 44px;

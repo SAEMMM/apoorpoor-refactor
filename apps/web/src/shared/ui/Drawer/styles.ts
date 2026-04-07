@@ -4,8 +4,14 @@ import { colors } from "@/styles/theme/tokens/color";
 
 export const MuiDrawer = styled(Drawer)(() => ({
   ".MuiPaper-root": {
+    maxWidth: "430px",
+    margin: "0 auto",
     borderTopLeftRadius: "16px",
     borderTopRightRadius: "16px",
+  },
+  ".MuiBackdrop-root": {
+    maxWidth: "430px",
+    margin: "0 auto",
   },
 }));
 
