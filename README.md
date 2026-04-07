@@ -1,17 +1,17 @@
-# apoorpoor-refactor
+# 📱 apoorpoor-refactor
 
 > 모바일 웹앱 기반 소비 관리 서비스
 
-Live Demo: https://apoorpoor-refactor.vercel.app/
+🔗 Live Demo: https://apoorpoor-refactor.vercel.app/
 
 ---
 
-## 작업 기간
+## 🗓️ 작업 기간
 - 2026.03.27 ~
 
 ---
 
-## 프로젝트 소개
+## 📌 프로젝트 소개
 
 `apoorpoor-refactor`는 기존 React 기반 프로젝트를
 **Next.js App Router 구조로 리팩토링**하며,
@@ -22,7 +22,7 @@ Live Demo: https://apoorpoor-refactor.vercel.app/
 
 ---
 
-## Tech Stack
+## 🛠 Tech Stack
 
 | 영역 | 기술 |
 |------|------|
@@ -35,7 +35,7 @@ Live Demo: https://apoorpoor-refactor.vercel.app/
 
 ---
 
-## 프로젝트 구조
+## 📂 프로젝트 구조
 
 ```
 apoorpoor-refactor/
@@ -73,9 +73,9 @@ apoorpoor-refactor/
 
 ---
 
-## 주요 기능
+## ✨ 주요 기능
 
-### 인증
+### 🔐 인증
 - JWT 기반 인증 (httpOnly Cookie)
 - 회원가입 / 로그인 / 로그아웃
 - 비밀번호 해싱 (bcrypt)
@@ -83,7 +83,7 @@ apoorpoor-refactor/
 - 아이디 저장 (localStorage)
 - Next.js Middleware 라우트 보호
 
-### 가계부
+### 📒 가계부
 - 월별 가계부 조회 (캘린더, 파이차트, 바차트, 내역 리스트)
 - 내역 추가 / 수정 / 삭제 (Server Actions + revalidatePath)
 - 캘린더 날짜 클릭 시 일별 내역 Drawer 표시
@@ -94,7 +94,7 @@ apoorpoor-refactor/
 - 가계부 이름 수정
 - 데이터 없는 달의 Empty UI (차트, 리스트)
 
-### 공용 컴포넌트
+### 🧩 공용 컴포넌트
 - Calendar (readOnly / date picker / 금액 표시 모드)
 - Drawer (모바일 앱 영역 내 bottom sheet)
 - Dropdown (maxHeight 50dvh 스크롤)
@@ -103,9 +103,9 @@ apoorpoor-refactor/
 
 ---
 
-## 실행 방법
+## 🚀 실행 방법
 
-### 사전 요구사항
+### 📋 사전 요구사항
 - Node.js 20+
 - pnpm
 - Docker
@@ -139,7 +139,7 @@ pnpm dev
 
 ---
 
-## 테스트 계정
+## 🧪 테스트 계정
 
 시드 데이터와 함께 생성되는 테스트 계정입니다.
 
@@ -152,7 +152,7 @@ pnpm dev
 
 ---
 
-## API 엔드포인트
+## 📡 API 엔드포인트
 
 ### Auth (Public)
 | Method | Path | 설명 |
@@ -177,7 +177,7 @@ pnpm dev
 
 ---
 
-## 진행 상태
+## 🚧 진행 상태
 
 - [x] 모노레포 구조 설계 (pnpm workspaces)
 - [x] 공용 UI 컴포넌트 구축
@@ -195,7 +195,7 @@ pnpm dev
 
 ---
 
-## 목표
+## 💡 목표
 
 단순한 UI 구현을 넘어,
 **실제 서비스로 확장 가능한 구조와 설계를 갖춘 풀스택 프로젝트**를 만드는 것을 목표로 합니다.
