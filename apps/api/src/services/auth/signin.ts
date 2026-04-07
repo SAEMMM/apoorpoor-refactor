@@ -28,6 +28,8 @@ export async function signIn({
       id: user.id,
       email: user.email,
       poorName: user.poorName,
+      points: user.points,
+      level: user.level,
     },
   };
 }

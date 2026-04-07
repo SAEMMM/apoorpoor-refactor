@@ -169,7 +169,7 @@ pnpm dev
 | GET | `/ledger/settings` | 가계부 설정 조회 |
 | PATCH | `/ledger/settings` | 가계부 이름 수정 |
 | GET | `/ledger/dashboard` | 월별 대시보드 |
-| GET | `/ledger/transactions` | 내역 목록 (페이지네이션) |
+| GET | `/ledger/transactions` | 월별 내역 목록 |
 | GET | `/ledger/items/:id` | 내역 단건 조회 |
 | POST | `/ledger/items` | 내역 추가 (+10pt) |
 | PATCH | `/ledger/items/:id` | 내역 수정 |

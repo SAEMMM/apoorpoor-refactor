@@ -1,6 +1,5 @@
 export type LedgerSettingsResponse = {
   name: string;
-  points: number;
 };
 
 export type UpdateLedgerSettingsRequest = {

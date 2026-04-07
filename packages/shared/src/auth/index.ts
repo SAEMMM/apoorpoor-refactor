@@ -21,5 +21,7 @@ export type AuthResponse = {
     id: string;
     email: string;
     poorName: string;
+    points: number;
+    level: number;
   };
 };

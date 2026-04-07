@@ -13,6 +13,5 @@ export const updateLedgerSettings = async (
 
   return {
     name: ledger.name,
-    points: ledger.points,
   };
 };

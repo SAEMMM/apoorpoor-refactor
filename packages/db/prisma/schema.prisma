@@ -31,6 +31,8 @@ model User {
   email    String @unique
   password String
   poorName String
+  points   Int    @default(0)
+  level    Int    @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,7 +47,6 @@ model Ledger {
   id     String @id @default(cuid())
   userId String @unique
   name   String @default("가계부 이름")
-  points Int    @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -8,6 +8,5 @@ export const getLedgerSettings = async (
 
   return {
     name: ledger?.name ?? "가계부 이름",
-    points: ledger?.points ?? 0,
   };
 };

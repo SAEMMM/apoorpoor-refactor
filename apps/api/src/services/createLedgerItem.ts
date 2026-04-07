@@ -18,10 +18,9 @@ export const createLedgerItem = async (
         date: new Date(data.date),
       },
     }),
-    prisma.ledger.upsert({
-      where: { userId },
-      update: { points: { increment: POINTS_PER_CREATE } },
-      create: { userId, points: POINTS_PER_CREATE },
+    prisma.user.update({
+      where: { id: userId },
+      data: { points: { increment: POINTS_PER_CREATE } },
     }),
   ]);
 
