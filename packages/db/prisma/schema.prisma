@@ -37,12 +37,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ledger      Ledger?
-  ledgerItems LedgerItem[]
+  ledger               Ledger?
+  ledgerItems          LedgerItem[]
+  userPoorItems        UserPoorItem[]
+  poorItemTransactions PoorItemTransaction[]
 
   @@map("users")
 }
 
+// 가계부 정보 (인당 1개)
 model Ledger {
   id     String @id @default(cuid())
   userId String @unique
@@ -56,14 +59,15 @@ model Ledger {
   @@map("ledgers")
 }
 
+// 가계부
 model LedgerItem {
-  id        String         @id @default(cuid())
-  userId    String
-  name      String
-  type      LedgerType
-  category  LedgerCategory
-  amount    Int
-  date      DateTime       @db.Date
+  id       String         @id @default(cuid())
+  userId   String
+  name     String
+  type     LedgerType
+  category LedgerCategory
+  amount   Int
+  date     DateTime       @db.Date
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,4 +76,68 @@ model LedgerItem {
 
   @@index([userId, date])
   @@map("ledger_items")
+}
+
+enum PoorItemCategory {
+  face
+  hair
+  clothes
+  pants
+  accessory
+  shoes
+  setup
+}
+
+model UserPoorItem {
+  id          String   @id @default(cuid())
+  userId      String
+  poorItemId  String
+  purchasedAt DateTime @default(now())
+  equipped    Boolean  @default(false) // 현재 착용 여부
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poorItem PoorItem @relation(fields: [poorItemId], references: [id], onDelete: Cascade)
+}
+
+// 전체 푸어 아이템 정보
+model PoorItem {
+  id            String           @id @default(cuid())
+  code          String           @unique // 아이템 코드 (예: basic_face_01)
+  category      PoorItemCategory
+  price         Int
+  requiredLevel Int
+  imageUrl      String?
+  inActive      Boolean          @default(true)
+  sortOrder     Int              @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownedBy              UserPoorItem[]
+  poorItemTransactions PoorItemTransaction[]
+
+  @@index([category, requiredLevel, sortOrder])
+  @@map("poor__items")
+}
+
+// 구매 이력 (관리용)
+enum PoorItemTransactionType {
+  purchase
+  reward
+  refund
+}
+
+model PoorItemTransaction {
+  id          String                  @id @default(cuid())
+  userId      String
+  poorItemId  String
+  type        PoorItemTransactionType
+  pointAmount Int
+  createdAt   DateTime                @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  poorItem PoorItem @relation(fields: [poorItemId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("poor_item_transactions")
 }

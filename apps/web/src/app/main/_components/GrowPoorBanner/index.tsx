@@ -3,13 +3,16 @@
 import { Box, Typography } from "@mui/material";
 
 import Image from "next/image";
-import React from "react"
+import React from "react";
 import { Wrapper } from "./styles";
 import { colors } from "@/styles/theme/tokens/color";
+import { useRouter } from "next/navigation";
 
 export const GrowPoorBanner = () => {
+  const router = useRouter();
+
   return (
-    <Wrapper>
+    <Wrapper onClick={() => router.push("/poor")}>
       <Box width={"100%"}>
         <Typography variant="h2">푸어 키우기</Typography>
         <Typography variant="body2" color={colors.gray[450]}>
