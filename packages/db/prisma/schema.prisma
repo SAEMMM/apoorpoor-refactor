@@ -102,12 +102,13 @@ model UserPoorItem {
 // 전체 푸어 아이템 정보
 model PoorItem {
   id            String           @id @default(cuid())
-  code          String           @unique // 아이템 코드 (예: basic_face_01)
+  code          String           @unique // 아이템 코드 (예: pants-01)
+  name          String
   category      PoorItemCategory
   price         Int
   requiredLevel Int
-  imageUrl      String?
-  inActive      Boolean          @default(true)
+  imgUrl        String?
+  isActive      Boolean          @default(true)
   sortOrder     Int              @default(0)
 
   createdAt DateTime @default(now())

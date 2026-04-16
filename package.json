@@ -10,6 +10,7 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r run typecheck",
     "lint": "pnpm -r lint",
+    "db:migrate:dev": "pnpm --filter @repo/db exec prisma migrate dev",
     "db:setup": "docker compose up -d && pnpm --filter @repo/db exec prisma migrate deploy && pnpm --filter @repo/db exec prisma db seed"
   },
   "pnpm": {
