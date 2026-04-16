@@ -3,7 +3,7 @@ import {
   LedgerDashboardResponse,
   LedgerSettingsResponse,
 } from "@repo/shared";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { Contents, Header } from "./styles";
 
 import { AccountBanner } from "./_components/AccountBanner";
@@ -12,11 +12,11 @@ import { GrowPoorBanner } from "./_components/GrowPoorBanner";
 import Image from "next/image";
 import Link from "next/link";
 import PageContainer from "@/shared/ui/layout/PageContainer";
-import React from "react";
 import { SpendingChallengeBanner } from "./_components/SpendingChallengeBanner";
 import { colors } from "@/styles/theme/tokens/color";
 import dayjs from "dayjs";
 import { fetchApi } from "@/shared/lib/fetchApi";
+import { redirect } from "next/navigation";
 
 const getCurrentMonthRange = () => {
   const now = dayjs();
@@ -56,9 +56,11 @@ export default async function MainPage() {
 
   const monthlyExpense = dashboard?.summary.expense ?? 0;
   const ledgerName = settings?.name ?? "가계부";
-  const user = auth?.user ?? null;
 
-  console.log(user);
+  if (!auth) {
+    redirect("/sign-in");
+  }
+
   return (
     <PageContainer>
       <Header>

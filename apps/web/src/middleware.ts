@@ -3,6 +3,7 @@ import { jwtVerify } from "jose";
 import { JWT_COOKIE_NAME } from "@repo/shared";
 
 const PUBLIC_PATHS = ["/", "/sign-in", "/sign-up"];
+const PROTECTED_PATH_PREFIXES = ["/main", "/ledger", "/poor", "/user-info"];
 
 function getSecret() {
   const secret = process.env.JWT_SECRET;
@@ -25,13 +26,12 @@ async function isAuthenticated(request: NextRequest): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.includes(pathname);
+  const isProtected = PROTECTED_PATH_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
   const authed = await isAuthenticated(request);
 
-  if (isPublic && authed) {
-    return NextResponse.redirect(new URL("/main", request.url));
-  }
-
-  if (!isPublic && !authed) {
+  if (isProtected && !authed) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
