@@ -4,14 +4,6 @@ import { Box, styled } from "@mui/material";
 
 import { colors } from "@/styles/theme/tokens/color";
 
-export const Header = styled(Box)(() => ({
-  width: "100%",
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
 export const PoorContainer = styled(Box)(() => ({
   width: "240px",
   height: "280px",

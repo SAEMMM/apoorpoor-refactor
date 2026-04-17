@@ -5,6 +5,7 @@ import { LedgerForm } from "../../../_components/LedgerForm";
 import type { LedgerItemResponse } from "@repo/shared";
 import Link from "next/link";
 import PageContainer from "@/shared/ui/layout/PageContainer";
+import PageHeader from "@/shared/ui/layout/PageHeader";
 import { colors } from "@/styles/theme/tokens/color";
 import { fetchApi } from "@/shared/lib/fetchApi";
 import { isValidMonth } from "@/features/ledger/utils/isValidMonth";
@@ -31,28 +32,7 @@ export default async function LedgerEditPage({ params }: EditPageProps) {
 
   return (
     <PageContainer sx={{ gap: "24px" }}>
-      <div
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Link
-          href={`/ledger/${month}`}
-          style={{ position: "absolute", left: 0 }}
-        >
-          <IconButton>
-            <ArrowBackIosNewIcon
-              fontSize="large"
-              sx={{ width: "24px", height: "24px", color: colors.black }}
-            />
-          </IconButton>
-        </Link>
-
-        <Typography variant="h2">내역 수정</Typography>
-      </div>
+      <PageHeader title="내역 수정" referenceUrl={`/ledger/${month}`} />
 
       <LedgerForm month={month} defaultValues={item} />
     </PageContainer>

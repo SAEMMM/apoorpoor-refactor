@@ -45,7 +45,6 @@ export const mapPoorItemView = (
     canPurchase:
       item.isActive &&
       !isOwned &&
-      user.level >= item.requiredLevel &&
-      user.points >= item.price,
+      user.level >= item.requiredLevel,
   };
 };

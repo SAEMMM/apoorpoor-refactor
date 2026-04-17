@@ -1,12 +1,13 @@
+import { Divider, InfoRow, InfoSection } from "./styles";
 import { IconButton, Typography } from "@mui/material";
 
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import type { AuthResponse } from "@repo/shared";
 import Link from "next/link";
 import PageContainer from "@/shared/ui/layout/PageContainer";
+import PageHeader from "@/shared/ui/layout/PageHeader";
 import { PasswordChangeForm } from "./_components/PasswordChangeForm";
 import { SignOutButton } from "./_components/SignOutButton";
-import { Divider, InfoRow, InfoSection } from "./styles";
 import { colors } from "@/styles/theme/tokens/color";
 import { fetchApi } from "@/shared/lib/fetchApi";
 import { redirect } from "next/navigation";
@@ -22,22 +23,7 @@ export default async function UserInfoPage() {
 
   return (
     <PageContainer sx={{ gap: "24px" }}>
-      <div
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Link href="/main" style={{ position: "absolute", left: 0 }}>
-          <IconButton size="small">
-            <ArrowBackIosNewIcon sx={{ color: colors.black }} />
-          </IconButton>
-        </Link>
-
-        <Typography variant="h2">내 정보</Typography>
-      </div>
+      <PageHeader title="내 정보" referenceUrl="/main" />
 
       <InfoSection>
         <Typography variant="body2" fontWeight={700}>

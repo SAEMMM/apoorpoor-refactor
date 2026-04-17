@@ -1,12 +1,12 @@
-import { GoItemButton, Header, PoorContainer, ProfileWrapper } from "./styles";
+import { GoItemButton, PoorContainer, ProfileWrapper } from "./styles";
 import { IconButton, Typography } from "@mui/material";
 
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { AuthResponse } from "@repo/shared";
 import EditIcon from "@mui/icons-material/Edit";
 import Image from "next/image";
 import Link from "next/link";
 import PageContainer from "@/shared/ui/layout/PageContainer";
+import PageHeader from "@/shared/ui/layout/PageHeader";
 import { colors } from "@/styles/theme/tokens/color";
 import { fetchApi } from "@/shared/lib/fetchApi";
 import { redirect } from "next/navigation";
@@ -36,17 +36,7 @@ export default async function PoorPage() {
     <PageContainer
       sx={{ justifyContent: "space-between", alignItems: "center" }}
     >
-      <Header>
-        <Link href={`/main`} style={{ position: "absolute", left: 0 }}>
-          <IconButton size="small">
-            <ArrowBackIosNewIcon
-              sx={{ width: "24px", height: "24px", color: colors.black }}
-            />
-          </IconButton>
-        </Link>
-
-        <Typography variant="h2">푸어 키우기</Typography>
-      </Header>
+      <PageHeader title="푸어 키우기" referenceUrl="/main" />
 
       <PoorContainer>
         <Image
@@ -74,7 +64,9 @@ export default async function PoorPage() {
         </IconButton>
       </ProfileWrapper>
 
-      <GoItemButton>아이템</GoItemButton>
+      <Link href="/poor/items">
+        <GoItemButton>아이템</GoItemButton>
+      </Link>
     </PageContainer>
   );
 }
