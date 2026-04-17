@@ -44,7 +44,7 @@ apoorpoor-refactor/
 │   │   ├── src/
 │   │   │   ├── lib/            # JWT 유틸리티
 │   │   │   ├── middleware/     # 인증 미들웨어
-│   │   │   ├── routes/         # API 라우트 (auth, ledger)
+│   │   │   ├── routes/         # API 라우트 (auth, ledger, poor)
 │   │   │   └── services/       # 비즈니스 로직
 │   │   └── .env.local
 │   └── web/                    # Next.js 프론트엔드 (port 3000)
@@ -54,10 +54,12 @@ apoorpoor-refactor/
 │       │   │   ├── sign-up/    # 회원가입
 │       │   │   ├── main/       # 메인 대시보드
 │       │   │   ├── ledger/     # 가계부
+│       │   │   ├── poor/       # 푸어 키우기
 │       │   │   └── user-info/  # 내 정보
 │       │   ├── features/       # 도메인별 로직
 │       │   │   ├── auth/       # 인증 Server Actions
-│       │   │   └── ledger/     # 가계부 Actions, 상수, 유틸
+│       │   │   ├── ledger/     # 가계부 Actions, 상수, 유틸
+│       │   │   └── poor/       # 푸어 구매/착용 Actions
 │       │   ├── shared/         # 공용 모듈
 │       │   │   ├── ui/         # 공용 UI 컴포넌트
 │       │   │   └── lib/        # fetchApi 등 유틸리티
@@ -93,6 +95,15 @@ apoorpoor-refactor/
 - 내역 추가 시 포인트 적립 (10pt)
 - 가계부 이름 수정
 - 데이터 없는 달의 Empty UI (차트, 리스트)
+
+### 🧍 푸어 키우기
+- `/poor`에서 현재 레벨, 포인트, 착용 중 아이템 조회
+- 아이템 카테고리별 목록 조회 (상의 / 하의 / 신발 / 액세서리 / 코스튬)
+- 아이템 상태 표시 (구매 가능 / 보유 / 착용 중 / 잠금)
+- 아이템 구매 Drawer 및 구매 후 포인트 차감
+- 아이템 착용 / 해제
+- 같은 카테고리의 기존 착용 아이템 자동 해제 후 새 아이템 착용
+- 테스트 시드 계정에 레벨 5, 기본 포인트, 보유/착용 아이템 제공
 
 ### 🧩 공용 컴포넌트
 - Calendar (readOnly / date picker / 금액 표시 모드)
@@ -130,6 +141,11 @@ pnpm db:setup
 > `docker compose up -d` → `prisma migrate deploy` → `prisma db seed`를 순서대로 실행합니다.
 > 처음 세팅하거나 DB를 초기화(`docker compose down -v`)한 경우에만 실행하면 됩니다.
 
+스키마 변경 시 개발용 마이그레이션은 아래 명령으로 생성할 수 있습니다.
+```bash
+pnpm db:migrate:dev
+```
+
 ### 4. 개발 서버 실행
 ```bash
 pnpm dev
@@ -147,8 +163,10 @@ pnpm dev
 |------|------|
 | 이메일 | `test@example.com` |
 | 비밀번호 | `test1234` |
+| 기본 레벨 | `5` |
+| 기본 포인트 | `150P` |
 
-> `pnpm db:setup` 실행 시 자동 생성됩니다. 2026년 1~4월 가계부 데이터(71건)가 함께 시드됩니다.
+> `pnpm db:setup` 실행 시 자동 생성됩니다. 2026년 1~4월 가계부 데이터(71건), 푸어 아이템 51종, 기본 보유 아이템 5개가 함께 시드됩니다.
 
 ---
 
@@ -175,6 +193,13 @@ pnpm dev
 | PATCH | `/ledger/items/:id` | 내역 수정 |
 | DELETE | `/ledger/items/:id` | 내역 삭제 |
 
+### Poor (인증 필요)
+| Method | Path | 설명 |
+|--------|------|------|
+| GET | `/poor` | 푸어 상태, 전체/보유/착용/구매 가능 아이템 조회 |
+| POST | `/poor/items/:id/purchase` | 아이템 구매 |
+| PATCH | `/poor/items/:id/equip` | 아이템 착용 / 해제 |
+
 ---
 
 ## 🚧 진행 상태
@@ -189,7 +214,7 @@ pnpm dev
 - [x] 비밀번호 변경 기능
 - [x] 캘린더, 파이차트, 바차트 데이터 시각화
 - [x] 포인트 시스템
-- [ ] 푸어 키우기 기능
+- [x] 푸어 키우기 기능
 - [ ] 소비 챌린지 기능
 - [ ] 실제 서비스 배포 및 운영
 

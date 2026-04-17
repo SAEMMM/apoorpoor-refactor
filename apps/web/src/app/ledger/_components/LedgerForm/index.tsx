@@ -13,8 +13,6 @@ import {
 } from "./styles";
 import Dropdown, { DropdownItem } from "@/shared/ui/Dropdown";
 import { FormControlLabel, IconButton, RadioGroup, Typography } from "@mui/material";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import type {
   LedgerCategory,
   LedgerItemResponse,
@@ -25,6 +23,8 @@ import {
   updateLedgerItemAction,
 } from "@/features/ledger/actions/ledgerItem";
 
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import Button from "@/shared/ui/Button";
 import { CATEGORY_LABEL_MAP } from "@/features/ledger/constants/category";
 import { Calendar } from "@/shared/ui/Calendar";
@@ -159,6 +159,7 @@ export const LedgerForm = ({ month, date, defaultValues }: LedgerFormProps) => {
   }, [values]);
 
   const categoryOptions = getCategoriesByType(values.type);
+  
   const selectedCategoryLabel = values.category
     ? CATEGORY_LABEL_MAP[values.category]
     : undefined;

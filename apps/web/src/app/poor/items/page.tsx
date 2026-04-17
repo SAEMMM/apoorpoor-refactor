@@ -18,7 +18,11 @@ export default async function ItemsPage() {
     <PageContainer sx={{ gap: "12px" }}>
       <PageHeader title="아이템" referenceUrl="/poor" />
 
-      <ItemsGroup items={poor.items} poorLevel={auth.user.level} />
+      <ItemsGroup
+        items={poor.items}
+        poorLevel={auth.user.level}
+        availablePoints={auth.user.points}
+      />
     </PageContainer>
   );
 }

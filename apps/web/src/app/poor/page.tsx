@@ -1,7 +1,7 @@
 import { GoItemButton, PoorContainer, ProfileWrapper } from "./styles";
 import { IconButton, Typography } from "@mui/material";
 
-import { AuthResponse } from "@repo/shared";
+import { PoorItemCategory, PoorOverviewResponse } from "@repo/shared";
 import EditIcon from "@mui/icons-material/Edit";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,14 +23,29 @@ const getPoorImageSrc = (level: number) => {
   return "/images/poor/poor-low.svg";
 };
 
-export default async function PoorPage() {
-  const auth = await fetchApi<AuthResponse>({ path: "/auth/me" });
+const EQUIPPED_ITEM_LAYER_ORDER: Record<PoorItemCategory, number> = {
+  setup: 10,
+  pants: 20,
+  clothes: 30,
+  shoes: 40,
+  accessory: 50,
+  hair: 60,
+  face: 70,
+};
 
-  if (!auth) {
+export default async function PoorPage() {
+  const poor = await fetchApi<PoorOverviewResponse>({ path: "/poor" });
+
+  if (!poor) {
     redirect("/sign-in");
   }
 
-  const { user } = auth;
+  const { user, equippedItems } = poor;
+  const sortedEquippedItems = [...equippedItems].sort(
+    (left, right) =>
+      EQUIPPED_ITEM_LAYER_ORDER[left.category] -
+      EQUIPPED_ITEM_LAYER_ORDER[right.category],
+  );
 
   return (
     <PageContainer
@@ -45,6 +60,24 @@ export default async function PoorPage() {
           width={122}
           height={225}
         />
+        {sortedEquippedItems.map((item) =>
+          item.imgUrl ? (
+            <Image
+              key={item.id}
+              src={item.imgUrl}
+              alt={item.name}
+              width={122}
+              height={225}
+              style={{
+                position: "absolute",
+                inset: "50% auto auto 50%",
+                transform: "translate(-50%, -50%)",
+                objectFit: "contain",
+                pointerEvents: "none",
+              }}
+            />
+          ) : null,
+        )}
         <Image
           src={`/images/level/level-${user.level}.svg`}
           alt="Poor Level"

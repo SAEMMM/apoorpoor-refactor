@@ -9,6 +9,21 @@ import {
 
 const prisma = new PrismaClient();
 
+const SEEDED_OWNED_POOR_ITEM_CODES = [
+  "clothes-07",
+  "pants-04",
+  "accessory-01",
+  "shoes-07",
+  "clothes-08",
+] as const;
+
+const SEEDED_EQUIPPED_POOR_ITEM_CODES = new Set<string>([
+  "clothes-07",
+  "pants-04",
+  "accessory-01",
+  "shoes-07",
+]);
+
 type SeedItem = {
   name: string;
   type: LedgerType;
@@ -1056,6 +1071,8 @@ async function main() {
       email: "test@example.com",
       password: hashedPassword,
       poorName: "테스트푸어",
+      level: 5,
+      points: 150,
       ledger: {
         create: {
           name: "테스트푸어의 가계부",
@@ -1074,9 +1091,40 @@ async function main() {
   }));
 
   const poorItemResult = await prisma.poorItem.createMany({ data: poorItems });
+  const seededPoorItems = await prisma.poorItem.findMany({
+    where: {
+      code: {
+        in: [...SEEDED_OWNED_POOR_ITEM_CODES],
+      },
+    },
+    select: {
+      id: true,
+      code: true,
+      price: true,
+    },
+  });
+
+  await prisma.userPoorItem.createMany({
+    data: seededPoorItems.map((poorItem) => ({
+      userId: user.id,
+      poorItemId: poorItem.id,
+      equipped: SEEDED_EQUIPPED_POOR_ITEM_CODES.has(poorItem.code),
+    })),
+  });
+
+  await prisma.poorItemTransaction.createMany({
+    data: seededPoorItems.map((poorItem) => ({
+      userId: user.id,
+      poorItemId: poorItem.id,
+      type: "purchase",
+      pointAmount: -poorItem.price,
+    })),
+  });
+
   const result = await prisma.ledgerItem.createMany({ data: items });
   console.log(`Seeded user: ${user.email} (password: test1234)`);
   console.log(`Seeded ${poorItemResult.count} poor items`);
+  console.log(`Seeded ${seededPoorItems.length} owned poor items`);
   console.log(`Seeded ${result.count} ledger items`);
 }
 

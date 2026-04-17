@@ -27,24 +27,24 @@ poorRoute.post("/items/:id/purchase", async (c) => {
   const poorItemId = c.req.param("id");
   const result = await purchasePoorItem(userId, poorItemId);
 
-  if (!result.ok) {
-    switch (result.code) {
-      case "USER_NOT_FOUND":
-        return c.json({ message: "User not found" }, 404);
-      case "ITEM_NOT_FOUND":
-        return c.json({ message: "Item not found" }, 404);
-      case "ITEM_INACTIVE":
-        return c.json({ message: "Item is inactive" }, 400);
-      case "ALREADY_OWNED":
-        return c.json({ message: "Item already owned" }, 409);
-      case "INSUFFICIENT_LEVEL":
-        return c.json({ message: "Insufficient level" }, 400);
-      case "INSUFFICIENT_POINTS":
-        return c.json({ message: "Insufficient points" }, 400);
-    }
+  if (result.ok) {
+    return c.json(result.data, 201);
   }
 
-  return c.json(result.data, 201);
+  switch (result.code) {
+    case "USER_NOT_FOUND":
+      return c.json({ message: "User not found" }, 404);
+    case "ITEM_NOT_FOUND":
+      return c.json({ message: "Item not found" }, 404);
+    case "ITEM_INACTIVE":
+      return c.json({ message: "Item is inactive" }, 400);
+    case "ALREADY_OWNED":
+      return c.json({ message: "Item already owned" }, 409);
+    case "INSUFFICIENT_LEVEL":
+      return c.json({ message: "Insufficient level" }, 400);
+    case "INSUFFICIENT_POINTS":
+      return c.json({ message: "Insufficient points" }, 400);
+  }
 });
 
 poorRoute.patch("/items/:id/equip", async (c) => {
@@ -59,16 +59,16 @@ poorRoute.patch("/items/:id/equip", async (c) => {
 
   const result = await setPoorItemEquipped(userId, poorItemId, equipped);
 
-  if (!result.ok) {
-    switch (result.code) {
-      case "USER_NOT_FOUND":
-        return c.json({ message: "User not found" }, 404);
-      case "ITEM_NOT_FOUND":
-        return c.json({ message: "Item not found" }, 404);
-      case "ITEM_NOT_OWNED":
-        return c.json({ message: "Item not owned" }, 400);
-    }
+  if (result.ok) {
+    return c.json(result.data);
   }
 
-  return c.json(result.data);
+  switch (result.code) {
+    case "USER_NOT_FOUND":
+      return c.json({ message: "User not found" }, 404);
+    case "ITEM_NOT_FOUND":
+      return c.json({ message: "Item not found" }, 404);
+    case "ITEM_NOT_OWNED":
+      return c.json({ message: "Item not owned" }, 400);
+  }
 });

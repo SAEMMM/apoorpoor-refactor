@@ -5,6 +5,7 @@ import { colors } from "@/styles/theme/tokens/color";
 export type ItemsClientProps = {
   items: PoorItemView[];
   poorLevel: number;
+  availablePoints: number;
 };
 
 export const CATEGORY_TABS: Array<{ value: PoorItemCategory; label: string }> =
