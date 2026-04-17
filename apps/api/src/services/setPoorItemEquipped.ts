@@ -1,5 +1,6 @@
 import { prisma } from "@repo/db";
-import type { SetPoorItemEquippedResponse } from "@repo/shared";
+import type { Prisma } from "@repo/db";
+import type { PoorItemView, SetPoorItemEquippedResponse } from "@repo/shared";
 import { mapPoorItemView, mapPoorUserSummary } from "./poorItemView";
 
 type SetPoorItemEquippedErrorCode =
@@ -52,7 +53,7 @@ export const setPoorItemEquipped = async (
     return { ok: false, code: "ITEM_NOT_OWNED" };
   }
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     if (equipped) {
       await tx.userPoorItem.updateMany({
         where: {
@@ -85,7 +86,7 @@ export const setPoorItemEquipped = async (
     orderBy: [{ category: "asc" }, { sortOrder: "asc" }],
   });
 
-  const itemViews = refreshedItems.map((item) =>
+  const itemViews: PoorItemView[] = refreshedItems.map((item) =>
     mapPoorItemView(item, refreshedUser),
   );
   const targetItem = itemViews.find((item) => item.id === poorItemId);

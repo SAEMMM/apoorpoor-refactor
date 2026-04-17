@@ -1,4 +1,5 @@
 import { prisma } from "@repo/db";
+import type { Prisma } from "@repo/db";
 import type { PurchasePoorItemResponse } from "@repo/shared";
 import { mapPoorItemView, mapPoorUserSummary } from "./poorItemView";
 
@@ -63,11 +64,12 @@ export const purchasePoorItem = async (
     return { ok: false, code: "INSUFFICIENT_POINTS" };
   }
 
-  const purchaseResult = await prisma.$transaction(async (tx) => {
-    const ownedItem = await tx.userPoorItem.create({
-      data: {
-        userId,
-        poorItemId,
+  const purchaseResult = await prisma.$transaction(
+    async (tx: Prisma.TransactionClient) => {
+      const ownedItem = await tx.userPoorItem.create({
+        data: {
+          userId,
+          poorItemId,
         equipped: false,
       },
     });
@@ -109,7 +111,8 @@ export const purchasePoorItem = async (
       updatedUser,
       purchasedItem,
     };
-  });
+    },
+  );
 
   const poorUser = mapPoorUserSummary(purchaseResult.updatedUser);
 

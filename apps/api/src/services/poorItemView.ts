@@ -1,14 +1,21 @@
 import type { PoorItemView, PoorUserSummary } from "@repo/shared";
-import type { Prisma } from "@repo/db";
+import type { PoorItemCategory } from "@repo/shared";
 
-type PoorItemWithOwnership = Prisma.PoorItemGetPayload<{
-  include: {
-    ownedBy: {
-      where: { userId: string };
-      select: { id: true; equipped: true };
-    };
-  };
-}>;
+type PoorItemWithOwnership = {
+  id: string;
+  code: string;
+  name: string;
+  category: PoorItemCategory;
+  price: number;
+  requiredLevel: number;
+  imgUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  ownedBy: Array<{
+    id: string;
+    equipped: boolean;
+  }>;
+};
 
 export const mapPoorUserSummary = (user: {
   id: string;
