@@ -1,6 +1,10 @@
 import { prisma } from "@repo/db";
 import type { PoorItemView, PoorOverviewResponse } from "@repo/shared";
-import { mapPoorItemView, mapPoorUserSummary } from "./poorItemView";
+import {
+  mapPoorItemView,
+  mapPoorUserSummary,
+  type PoorItemWithOwnership,
+} from "./poorItemView";
 
 export const getPoorOverview = async (
   userId: string,
@@ -30,7 +34,7 @@ export const getPoorOverview = async (
     orderBy: [{ category: "asc" }, { sortOrder: "asc" }],
   });
 
-  const itemViews: PoorItemView[] = items.map((item) =>
+  const itemViews: PoorItemView[] = items.map((item: PoorItemWithOwnership) =>
     mapPoorItemView(item, poorUser),
   );
 

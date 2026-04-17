@@ -66,99 +66,95 @@ export const ItemsGroup = ({ items, poorLevel }: ItemsClientProps) => {
           gap: "16px",
         }}
       >
-        {filteredItems.map((item) => (
-          <ItemWrapper key={item.id}>
-            {(() => {
-              const isLocked = item.requiredLevel > poorLevel;
+        {filteredItems.map((item) => {
+          const isLocked = item.requiredLevel > poorLevel;
 
-              return (
-                <>
-                  <ImageWrapper>
-                    {isLocked && (
-                      <LockedImageWrapper>
-                        <RequiredLevelChip>
-                          <Typography
-                            variant="body2"
-                            color={colors.primary.l[700]}
-                            fontWeight={700}
-                            textAlign={"center"}
-                          >
-                            Lv. {item.requiredLevel}
-                            <br />
-                            개방
-                          </Typography>
-                        </RequiredLevelChip>
-                      </LockedImageWrapper>
-                    )}
-                    <ImageArea
-                      sx={{
-                        filter: isLocked ? "blur(4px)" : "none",
-                        opacity: isLocked ? 0.45 : 1,
-                        transition: "filter 0.2s ease, opacity 0.2s ease",
-                      }}
-                    >
-                      {item.imgUrl ? (
-                        <Image
-                          src={item.imgUrl}
-                          alt={item.name}
-                          width={88}
-                          height={88}
-                          style={{
-                            objectFit: "contain",
-                            width: "auto",
-                            maxWidth: "100%",
-                            maxHeight: "88px",
-                          }}
-                        />
-                      ) : (
-                        <Typography variant="body2" color={colors.gray[400]}>
-                          이미지 없음
-                        </Typography>
-                      )}
-                    </ImageArea>
-
-                    <ItemName>
+          return (
+            <ItemWrapper key={item.id}>
+              <ImageWrapper>
+                {isLocked && (
+                  <LockedImageWrapper>
+                    <RequiredLevelChip>
                       <Typography
                         variant="body2"
+                        color={colors.primary.l[700]}
                         fontWeight={700}
-                        sx={{
-                          textAlign: "center",
-                          wordBreak: "keep-all",
-                          overflowWrap: "normal",
-                          color: isLocked ? colors.white : colors.black,
-                          opacity: isLocked ? 0.96 : 1,
-                          textShadow: isLocked
-                            ? "0px 4px 14px rgba(20, 48, 92, 0.45)"
-                            : "none",
-                          filter: isLocked ? "blur(0.4px)" : "none",
-                        }}
+                        textAlign={"center"}
                       >
-                        {item.name}
+                        Lv. {item.requiredLevel}
+                        <br />
+                        개방
                       </Typography>
-                    </ItemName>
-                  </ImageWrapper>
+                    </RequiredLevelChip>
+                  </LockedImageWrapper>
+                )}
+                <ImageArea
+                  sx={{
+                    filter: isLocked ? "blur(4px)" : "none",
+                    opacity: isLocked ? 0.45 : 1,
+                    transition: "filter 0.2s ease, opacity 0.2s ease",
+                  }}
+                >
+                  {item.imgUrl ? (
+                    <Image
+                      src={item.imgUrl}
+                      alt={item.name}
+                      width={88}
+                      height={88}
+                      style={{
+                        objectFit: "contain",
+                        width: "auto",
+                        maxWidth: "100%",
+                        maxHeight: "88px",
+                      }}
+                    />
+                  ) : (
+                    <Typography variant="body2" color={colors.gray[400]}>
+                      이미지 없음
+                    </Typography>
+                  )}
+                </ImageArea>
 
-                  <StatusChip
+                <ItemName>
+                  <Typography
+                    variant="body2"
+                    fontWeight={700}
                     sx={{
-                      backgroundColor: getStatusBackgroundColor(item, isLocked),
-                      cursor: getStatusCursor(item, isLocked),
+                      textAlign: "center",
+                      wordBreak: "keep-all",
+                      overflowWrap: "normal",
+                      color: isLocked ? colors.white : colors.black,
+                      opacity: isLocked ? 0.96 : 1,
+                      textShadow: isLocked
+                        ? "0px 4px 14px rgba(20, 48, 92, 0.45)"
+                        : "none",
+                      filter: isLocked ? "blur(0.4px)" : "none",
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: getStatusTextColor(item, isLocked),
-                        fontWeight: 700,
-                      }}
-                    >
-                      {getStatusText(item)}
-                    </Typography>
-                  </StatusChip>
-                </>
-              );
-            })()}
-          </ItemWrapper>
-        ))}
+                    {item.name}
+                  </Typography>
+                </ItemName>
+              </ImageWrapper>
+
+              <StatusChip
+                sx={{
+                  backgroundColor: getStatusBackgroundColor(item, isLocked),
+                  cursor: getStatusCursor(item, isLocked),
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: getStatusTextColor(item, isLocked),
+                    fontWeight: 700,
+                  }}
+                >
+                  {getStatusText(item)}
+                </Typography>
+              </StatusChip>
+            </ItemWrapper>
+          );
+        })}
       </Box>
 
       {filteredItems.length === 0 ? (

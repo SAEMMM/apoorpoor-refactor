@@ -1,7 +1,11 @@
 import { prisma } from "@repo/db";
 import type { Prisma } from "@repo/db";
 import type { PoorItemView, SetPoorItemEquippedResponse } from "@repo/shared";
-import { mapPoorItemView, mapPoorUserSummary } from "./poorItemView";
+import {
+  mapPoorItemView,
+  mapPoorUserSummary,
+  type PoorItemWithOwnership,
+} from "./poorItemView";
 
 type SetPoorItemEquippedErrorCode =
   | "USER_NOT_FOUND"
@@ -86,7 +90,8 @@ export const setPoorItemEquipped = async (
     orderBy: [{ category: "asc" }, { sortOrder: "asc" }],
   });
 
-  const itemViews: PoorItemView[] = refreshedItems.map((item) =>
+  const itemViews: PoorItemView[] = refreshedItems.map(
+    (item: PoorItemWithOwnership) =>
     mapPoorItemView(item, refreshedUser),
   );
   const targetItem = itemViews.find((item) => item.id === poorItemId);

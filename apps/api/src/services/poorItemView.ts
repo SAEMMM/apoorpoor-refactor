@@ -1,7 +1,7 @@
 import type { PoorItemView, PoorUserSummary } from "@repo/shared";
 import type { PoorItemCategory } from "@repo/shared";
 
-type PoorItemWithOwnership = {
+export type PoorItemWithOwnership = {
   id: string;
   code: string;
   name: string;
