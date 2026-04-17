@@ -22,6 +22,30 @@
 
 ---
 
+## 🖼️ 화면 미리보기
+
+### 메인
+메인 대시보드에서 가계부와 푸어 키우기 화면으로 진입할 수 있습니다.
+
+![메인 화면](./docs/images/capture-1.png)
+
+### 가계부
+가계부 메인, 상세, 차트, 리스트 화면을 제공합니다.
+
+![가계부 메인](./docs/images/capture-2.png)
+![가계부 상세](./docs/images/capture-3.png)
+![가계부 차트](./docs/images/capture-4.png)
+![가계부 리스트](./docs/images/capture-5.png)
+
+### 푸어 키우기
+현재 푸어 상태와 아이템 슬롯 화면에서 구매/착용 흐름을 테스트할 수 있습니다.
+
+![푸어 상태](./docs/images/capture-6.png)
+![아이템 슬롯 1](./docs/images/capture-7.png)
+![아이템 슬롯 2](./docs/images/capture-8.png)
+
+---
+
 ## 🛠 Tech Stack
 
 | 영역 | 기술 |
@@ -103,6 +127,7 @@ apoorpoor-refactor/
 - 아이템 구매 Drawer 및 구매 후 포인트 차감
 - 아이템 착용 / 해제
 - 같은 카테고리의 기존 착용 아이템 자동 해제 후 새 아이템 착용
+- `/poor`에서 착용 중인 아이템 오버레이 렌더
 - 테스트 시드 계정에 레벨 5, 기본 포인트, 보유/착용 아이템 제공
 
 ### 🧩 공용 컴포넌트
