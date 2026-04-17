@@ -27,22 +27,32 @@
 ### 메인
 메인 대시보드에서 가계부와 푸어 키우기 화면으로 진입할 수 있습니다.
 
-![메인 화면](./docs/images/capture-1.png)
+<p align="center">
+  <img src="./docs/images/capture-1.png" alt="메인 화면" width="320" />
+</p>
 
 ### 가계부
 가계부 메인, 상세, 차트, 리스트 화면을 제공합니다.
 
-![가계부 메인](./docs/images/capture-2.png)
-![가계부 상세](./docs/images/capture-3.png)
-![가계부 차트](./docs/images/capture-4.png)
-![가계부 리스트](./docs/images/capture-5.png)
+<p align="center">
+  <img src="./docs/images/capture-2.png" alt="가계부 메인" width="240" />
+  <img src="./docs/images/capture-3.png" alt="가계부 상세" width="240" />
+</p>
+<p align="center">
+  <img src="./docs/images/capture-4.png" alt="가계부 차트" width="240" />
+  <img src="./docs/images/capture-5.png" alt="가계부 리스트" width="240" />
+</p>
 
 ### 푸어 키우기
 현재 푸어 상태와 아이템 슬롯 화면에서 구매/착용 흐름을 테스트할 수 있습니다.
 
-![푸어 상태](./docs/images/capture-6.png)
-![아이템 슬롯 1](./docs/images/capture-7.png)
-![아이템 슬롯 2](./docs/images/capture-8.png)
+<p align="center">
+  <img src="./docs/images/capture-6.png" alt="푸어 상태" width="240" />
+</p>
+<p align="center">
+  <img src="./docs/images/capture-7.png" alt="아이템 슬롯 1" width="240" />
+  <img src="./docs/images/capture-8.png" alt="아이템 슬롯 2" width="240" />
+</p>
 
 ---
 
